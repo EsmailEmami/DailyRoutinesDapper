@@ -9,4 +9,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DailyRoutines.Application\DailyRoutines.Application.csproj" />
+    <ProjectReference Include="..\DailyRoutines.Infrastructure\DailyRoutines.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

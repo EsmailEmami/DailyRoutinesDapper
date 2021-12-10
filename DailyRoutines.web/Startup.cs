@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DailyRoutines.Infrastructure;
 
 namespace DailyRoutines.web
 {
@@ -24,6 +25,7 @@ namespace DailyRoutines.web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddInfrastructure(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
