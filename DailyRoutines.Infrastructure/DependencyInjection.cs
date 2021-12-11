@@ -31,10 +31,12 @@ namespace DailyRoutines.Infrastructure
             //services 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IActionService, ActionService>();
 
             //repository
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IActionRepository, ActionRepository>();
 
             #endregion
 

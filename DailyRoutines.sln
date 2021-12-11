@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyRoutines.web", "DailyRoutines.web\DailyRoutines.web.csproj", "{354166E5-1EE9-4D6C-AC6B-3DCBABAB81CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyRoutines.web", "DailyRoutines.web\DailyRoutines.web.csproj", "{354166E5-1EE9-4D6C-AC6B-3DCBABAB81CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyRoutines.Application", "DailyRoutines.Application\DailyRoutines.Application.csproj", "{957EEE8B-9BA9-4AA0-9305-8B7A82F0D184}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyRoutines.Application", "DailyRoutines.Application\DailyRoutines.Application.csproj", "{957EEE8B-9BA9-4AA0-9305-8B7A82F0D184}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyRoutines.Infrastructure", "DailyRoutines.Infrastructure\DailyRoutines.Infrastructure.csproj", "{2EAFCA71-94F1-49ED-9272-1375D8A59CF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyRoutines.Infrastructure", "DailyRoutines.Infrastructure\DailyRoutines.Infrastructure.csproj", "{2EAFCA71-94F1-49ED-9272-1375D8A59CF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyRoutines.Domain", "DailyRoutines.Domain\DailyRoutines.Domain.csproj", "{64979EB7-436B-477D-90A0-F99B51CEFC41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyRoutines.Domain", "DailyRoutines.Domain\DailyRoutines.Domain.csproj", "{64979EB7-436B-477D-90A0-F99B51CEFC41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
