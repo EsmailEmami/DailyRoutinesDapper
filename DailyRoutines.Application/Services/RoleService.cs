@@ -5,11 +5,11 @@ namespace DailyRoutines.Application.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRoleRepository _role;
 
-        public RoleService(IRoleRepository roleRepository)
+        public RoleService(IRoleRepository role)
         {
-            _roleRepository = roleRepository;
+            _role = role;
         }
     }
 }

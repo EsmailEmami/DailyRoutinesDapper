@@ -74,17 +74,6 @@ namespace DailyRoutines.Infrastructure
 
             #endregion
 
-            #region Prevent Cross-Site Request
-
-            services.AddAntiforgery(options =>
-            {
-                options.Cookie.Name = "X-CSRF-TOKEN-DAILYROUTINES";
-                options.HeaderName = "X-CSRF-TOKEN-DAILYROUTINES";
-                options.FormFieldName = "X-CSRF-TOKEN-DAILYROUTINES";
-            });
-
-            #endregion
-
             return services;
         }
     }

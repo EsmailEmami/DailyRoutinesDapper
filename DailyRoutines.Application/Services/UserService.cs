@@ -11,19 +11,19 @@ namespace DailyRoutines.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _user;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository user)
         {
-            _userRepository = userRepository;
+            _user = user;
         }
 
         public async Task<ResultTypes> AddUserAsync(User user)
         {
             try
             {
-                await _userRepository.AddUserAsync(user);
-                await _userRepository.SaveChangesAsync();
+                await _user.AddUserAsync(user);
+                await _user.SaveChangesAsync();
 
                 return ResultTypes.Successful;
             }
@@ -37,13 +37,13 @@ namespace DailyRoutines.Application.Services
         {
             string encodedPass = PasswordHelper.EncodePasswordMd5(password);
 
-            return await _userRepository.IsUserExistAsync(email, password);
+            return await _user.IsUserExistAsync(email, password);
         }
 
         public async Task<User> GetUserByEmailAsync(string email) =>
-            await _userRepository.GetUserByEmailAsync(email);
+            await _user.GetUserByEmailAsync(email);
 
         public async Task<UserDashboardForShow> GetUserDashboardAsync(Guid userId) =>
-            await _userRepository.GetUserDashboardAsync(userId);
+            await _user.GetUserDashboardAsync(userId);
     }
 }
