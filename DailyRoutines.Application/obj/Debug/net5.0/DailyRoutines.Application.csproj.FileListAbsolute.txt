@@ -1,0 +1,15 @@
+C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net5.0\DailyRoutines.Application.deps.json
+C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net5.0\DailyRoutines.Application.dll
+C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net5.0\ref\DailyRoutines.Application.dll
+C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net5.0\DailyRoutines.Application.pdb
+C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net5.0\DailyRoutines.Domain.dll
+C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net5.0\DailyRoutines.Domain.pdb
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.csproj.AssemblyReference.cache
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.AssemblyInfoInputs.cache
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.AssemblyInfo.cs
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.csproj.CoreCompileInputs.cache
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.csproj.CopyComplete
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.dll
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\ref\DailyRoutines.Application.dll
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net5.0\DailyRoutines.Application.pdb

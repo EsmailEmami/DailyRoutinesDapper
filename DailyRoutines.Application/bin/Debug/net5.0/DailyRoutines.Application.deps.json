@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "DailyRoutines.Application/1.0.0": {
+        "dependencies": {
+          "DailyRoutines.Domain": "1.0.0"
+        },
+        "runtime": {
+          "DailyRoutines.Application.dll": {}
+        }
+      },
+      "DailyRoutines.Domain/1.0.0": {
+        "runtime": {
+          "DailyRoutines.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DailyRoutines.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DailyRoutines.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
