@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EBl4yU9mDNCt+QIx2GwGMKTJ+PDCjemNBD9W8kGdvzNq2gEdHouHm5LqnIhmn92sFjxV3QoiUixL4h70eWcGQQ==",
+  "dgSpecHash": "mt739SkUoH7AygEwAnTHEd9I9p6TXLnTTeyDk6dvywPqsOdspT+/v+wXy3udzmi1LeZstEg4e5q6kfAWwPG0VQ==",
   "success": true,
-  "projectFilePath": "H:\\DailyRoutines\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj",
+  "projectFilePath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
