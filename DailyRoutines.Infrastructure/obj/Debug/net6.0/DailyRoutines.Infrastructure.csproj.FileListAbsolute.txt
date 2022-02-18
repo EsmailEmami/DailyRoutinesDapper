@@ -6,7 +6,6 @@ C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\DailyRou
 C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.deps.json
 C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.runtimeconfig.json
 C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.dll
-C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\bin\Debug\net6.0\ref\DailyRoutines.Infrastructure.dll
 C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.pdb
 C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Application.dll
 C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Domain.dll
@@ -36,3 +35,4 @@ H:\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\refint\DailyRouti
 H:\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\DailyRoutines.Infrastructure.pdb
 H:\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\DailyRoutines.Infrastructure.genruntimeconfig.cache
 H:\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\ref\DailyRoutines.Infrastructure.dll
+C:\Projects\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\refint\DailyRoutines.Infrastructure.dll

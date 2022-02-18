@@ -25,6 +25,9 @@ public class RoutineService : IRoutineService
     public FilterCategoriesDTO GetCategories(FilterCategoriesDTO filter) =>
         _routine.GetUserCategories(filter);
 
+    public FilterCategoriesDTO GetRecycleCategories(FilterCategoriesDTO filter) =>
+        _routine.GetUserRecycleCategories(filter);
+
     public FilterActionsDTO GetActionsOfCategory(FilterActionsDTO filter) =>
         _routine.GetActionsOfCategory(filter);
 

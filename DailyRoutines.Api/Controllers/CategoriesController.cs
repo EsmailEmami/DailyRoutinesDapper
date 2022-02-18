@@ -115,7 +115,7 @@ public class CategoriesController : SiteBaseController
 
     #region Remove Category
 
-    [HttpDelete("[action]")]
+    [HttpPut("[action]")]
     public IActionResult RemoveCategory([FromQuery] Guid categoryId)
     {
         if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
@@ -139,6 +139,32 @@ public class CategoriesController : SiteBaseController
 
     #endregion
 
+    #region Remove Category
+
+    [HttpPut("[action]")]
+    public IActionResult ReturnCategory([FromQuery] Guid categoryId)
+    {
+        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+        var category = _routineService.GetCategoryById(categoryId);
+
+        if (category == null)
+            return JsonResponseStatus.NotFound("دسته بندی یافت نشد.");
+
+        category.IsDelete = false;
+
+        var editCategory = _routineService.EditCategory(category);
+
+        if (editCategory == ResultTypes.Successful)
+            return JsonResponseStatus.Success();
+
+
+        return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
+    }
+
+    #endregion
+
     #region User Categories
 
     [HttpGet("[action]")]
@@ -149,6 +175,22 @@ public class CategoriesController : SiteBaseController
 
 
         var categories = _routineService.GetCategories(filter);
+
+        return categories == null ? JsonResponseStatus.NotFound() : JsonResponseStatus.Success(categories);
+    }
+
+    #endregion
+
+    #region Recycle User Categories
+
+    [HttpGet("[action]")]
+    public IActionResult UserRecycleCategories([FromQuery] FilterCategoriesDTO filter)
+    {
+        if (filter.UserId.IsEmpty())
+            filter.UserId = User.GetUserId();
+
+
+        var categories = _routineService.GetRecycleCategories(filter);
 
         return categories == null ? JsonResponseStatus.NotFound() : JsonResponseStatus.Success(categories);
     }

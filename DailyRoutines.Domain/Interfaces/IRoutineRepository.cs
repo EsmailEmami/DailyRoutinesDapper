@@ -12,6 +12,7 @@ namespace DailyRoutines.Domain.Interfaces
         #region category
 
         FilterCategoriesDTO GetUserCategories(FilterCategoriesDTO filter);
+        FilterCategoriesDTO GetUserRecycleCategories(FilterCategoriesDTO filter);
         EditCategoryDTO GetCategoryForEdit(Guid categoryId);
 
         UserCategory GetCategoryById(Guid categoryId);

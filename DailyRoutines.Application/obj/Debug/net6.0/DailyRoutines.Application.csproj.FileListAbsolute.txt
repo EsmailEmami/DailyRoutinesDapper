@@ -1,6 +1,5 @@
 C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net6.0\DailyRoutines.Application.deps.json
 C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net6.0\DailyRoutines.Application.dll
-C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net6.0\ref\DailyRoutines.Application.dll
 C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net6.0\DailyRoutines.Application.pdb
 C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net6.0\DailyRoutines.Domain.dll
 C:\Projects\DailyRoutines\DailyRoutines.Application\bin\Debug\net6.0\DailyRoutines.Domain.pdb
@@ -28,3 +27,4 @@ H:\DailyRoutines\DailyRoutines.Application\obj\Debug\net6.0\DailyRoutines.Applic
 H:\DailyRoutines\DailyRoutines.Application\obj\Debug\net6.0\refint\DailyRoutines.Application.dll
 H:\DailyRoutines\DailyRoutines.Application\obj\Debug\net6.0\DailyRoutines.Application.pdb
 H:\DailyRoutines\DailyRoutines.Application\obj\Debug\net6.0\ref\DailyRoutines.Application.dll
+C:\Projects\DailyRoutines\DailyRoutines.Application\obj\Debug\net6.0\refint\DailyRoutines.Application.dll

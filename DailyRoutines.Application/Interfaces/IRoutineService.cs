@@ -12,6 +12,7 @@ namespace DailyRoutines.Application.Interfaces;
 public interface IRoutineService
 {
     FilterCategoriesDTO GetCategories(FilterCategoriesDTO filter);
+    FilterCategoriesDTO GetRecycleCategories(FilterCategoriesDTO filter);
     FilterActionsDTO GetActionsOfCategory(FilterActionsDTO filter);
     FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter);
     EditCategoryDTO GetCategoryForEdit(Guid categoryId);
