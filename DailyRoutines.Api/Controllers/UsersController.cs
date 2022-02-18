@@ -23,6 +23,8 @@ public class UsersController : SiteBaseController
     #endregion
 
 
+    #region Dashboard
+
     [HttpGet("[action]")]
     public IActionResult DashBoard()
     {
@@ -34,6 +36,10 @@ public class UsersController : SiteBaseController
 
         return JsonResponseStatus.Success(dashboardData);
     }
+
+    #endregion
+
+    #region Edit Dashboard
 
     [HttpPut("[action]")]
     public IActionResult EditDashboard([FromBody] EditUserDashboardDTO userData)
@@ -56,4 +62,32 @@ public class UsersController : SiteBaseController
 
         return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
     }
+
+    #endregion
+
+    #region Edit Dashboard
+
+    [HttpPost("[action]")]
+    public IActionResult AddPhoneNumber([FromQuery] string phoneNumber)
+    {
+        var user = _userService.GetUserById(User.GetUserId());
+
+        if (user == null)
+            return JsonResponseStatus.NotFound("کاربری یافت نشد.");
+
+        if (user.PhoneNumber != null)
+            return JsonResponseStatus.Error("شماره تلفن شما از قبل ثبت شده است.");
+
+
+        user.PhoneNumber = phoneNumber;
+
+        var editUser = _userService.EditUser(user);
+
+        if (editUser == ResultTypes.Successful)
+            return JsonResponseStatus.Success();
+
+        return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
+    }
+
+    #endregion
 }

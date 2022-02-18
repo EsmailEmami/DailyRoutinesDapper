@@ -10,7 +10,6 @@ C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines.Api.e
 C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines.Api.deps.json
 C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines.Api.runtimeconfig.json
 C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines.Api.dll
-C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\ref\DailyRoutines.Api.dll
 C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines.Api.pdb
 C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\AutoMapper.dll
 C:\Projects\DailyRoutines\DailyRoutines.Api\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
@@ -624,3 +623,4 @@ H:\DailyRoutines\DailyRoutines.Api\obj\Debug\net6.0\refint\DailyRoutines.Api.dll
 H:\DailyRoutines\DailyRoutines.Api\obj\Debug\net6.0\DailyRoutines.Api.pdb
 H:\DailyRoutines\DailyRoutines.Api\obj\Debug\net6.0\DailyRoutines.Api.genruntimeconfig.cache
 H:\DailyRoutines\DailyRoutines.Api\obj\Debug\net6.0\ref\DailyRoutines.Api.dll
+C:\Projects\DailyRoutines\DailyRoutines.Api\obj\Debug\net6.0\refint\DailyRoutines.Api.dll
