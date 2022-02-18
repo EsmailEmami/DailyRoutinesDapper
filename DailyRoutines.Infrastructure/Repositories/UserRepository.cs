@@ -1,5 +1,5 @@
 ﻿using DailyRoutines.Domain.DTOs.User;
-using DailyRoutines.Domain.Entities;
+using DailyRoutines.Domain.Entities.User;
 using DailyRoutines.Domain.Interfaces;
 using DailyRoutines.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -7,42 +7,50 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DailyRoutines.Infrastructure.Repositories
+namespace DailyRoutines.Infrastructure.Repositories;
+
+public class UserRepository : IUserRepository
 {
-    public class UserRepository : IUserRepository
+    private readonly DailyRoutinesDbContext _context;
+
+    public UserRepository(DailyRoutinesDbContext context)
     {
-        private readonly DailyRoutinesDbContext _context;
-
-        public UserRepository(DailyRoutinesDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task AddUserAsync(User user) =>
-            await _context.Users.AddAsync(user);
-
-        public void UpdateUser(User user) =>
-            _context.Users.Update(user);
-
-        public void RemoveUser(User user) =>
-            _context.Users.Remove(user);
-
-        public async Task<bool> IsUserExistAsync(string email, string password) =>
-            await _context.Users.AnyAsync(c => c.Email == email && c.Password == password);
-
-        public async Task<User> GetUserByEmailAsync(string email) =>
-            await _context.Users.SingleOrDefaultAsync(c => c.Email == email);
-
-        public async Task<UserDashboardForShow> GetUserDashboardAsync(Guid userId) =>
-            await _context.Users.Where(c => c.UserId == userId)
-                .Select(c => new UserDashboardForShow()
-                {
-                    FullName = c.FullName,
-                    Email = c.Email,
-                    PhoneNumber = c.PhoneNumber,
-                }).SingleOrDefaultAsync();
-
-        public async Task SaveChangesAsync() =>
-            await _context.SaveChangesAsync();
+        _context = context;
     }
+
+    public void AddUser(User user) => _context.Users.Add(user);
+
+    public void UpdateUser(User user) =>
+        _context.Users.Update(user);
+
+    public void RemoveUser(User user) =>
+        _context.Users.Remove(user);
+
+    public bool IsUserExist(string email, string password) =>
+        _context.Users.Any(c => c.Email == email && c.Password == password);
+
+    public User GetUserByEmail(string email) =>
+        _context.Users.SingleOrDefault(c => c.Email == email);
+
+    public User GetUserById(Guid userId) =>
+        _context.Users.Find(userId);
+
+    public bool IsUserPhoneNumberExists(string phoneNumber) =>
+        _context.Users.Any(c => c.PhoneNumber == phoneNumber);
+
+    public bool IsUserEmailExists(string email) =>
+        _context.Users.Any(c => c.Email == email);
+
+    public UserDashboardDTO GetUserDashboard(Guid userId) =>
+        _context.Users.Where(c => c.Id == userId)
+            .Select(c => new UserDashboardDTO()
+            {
+                FirstName = c.FirstName,
+                LastName = c.LastName,
+                Email = c.Email,
+                PhoneNumber = c.PhoneNumber,
+            }).SingleOrDefault();
+
+    public void SaveChanges() =>
+        _context.SaveChanges();
 }

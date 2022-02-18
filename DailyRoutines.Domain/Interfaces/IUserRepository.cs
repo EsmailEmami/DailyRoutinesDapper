@@ -1,21 +1,23 @@
 ﻿using DailyRoutines.Domain.DTOs.User;
+using DailyRoutines.Domain.Entities.User;
 using System;
-using System.Threading.Tasks;
-using DailyRoutines.Domain.Entities;
 
 namespace DailyRoutines.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task AddUserAsync(User user);
+        void AddUser(User user);
         void UpdateUser(User user);
         void RemoveUser(User user);
 
-        Task<bool> IsUserExistAsync(string email, string password);
-        Task<User> GetUserByEmailAsync(string email);
+        bool IsUserExist(string email, string password);
+        User GetUserByEmail(string email);
+        User GetUserById(Guid userId);
+        bool IsUserPhoneNumberExists(string phoneNumber);
+        bool IsUserEmailExists(string email);
 
-        Task<UserDashboardForShow> GetUserDashboardAsync(Guid userId);
+        UserDashboardDTO GetUserDashboard(Guid userId);
 
-        Task SaveChangesAsync();
+        void SaveChanges();
     }
 }

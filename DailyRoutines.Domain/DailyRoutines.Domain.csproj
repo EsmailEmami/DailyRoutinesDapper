@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\User\" />
-    <Folder Include="Interfaces\" />
+    <Folder Include="DTOs\Common\" />
+    <Folder Include="DTOs\Paging\" />
+    <Folder Include="Entities\Common\" />
   </ItemGroup>
 
 </Project>

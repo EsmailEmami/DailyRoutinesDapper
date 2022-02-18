@@ -1,80 +1,90 @@
-﻿using DailyRoutines.Infrastructure.Context;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
+﻿
+using DailyRoutines.Application.Convertors;
+using DailyRoutines.Application.Interfaces;
+using DailyRoutines.Application.Senders;
+using DailyRoutines.Application.Services;
+using DailyRoutines.Domain.Interfaces;
+using DailyRoutines.Infrastructure.Context;
+using DailyRoutines.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using DailyRoutines.Application.Interfaces;
-using DailyRoutines.Application.Services;
-using DailyRoutines.Domain.Interfaces;
-using DailyRoutines.Infrastructure.Repositories;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
+namespace DailyRoutines.Infrastructure;
 
-namespace DailyRoutines.Infrastructure
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-        {
-            #region Db Context
+        #region Db Context
 
-            services.AddDbContext<DailyRoutinesDbContext>(options =>
-               options.UseSqlServer(configuration.GetConnectionString("DailyRoutinesDbConnection")));
+        services.AddDbContext<DailyRoutinesDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DailyRoutinesDbConnection")));
 
-            #endregion
+        #endregion
 
-            #region IoC
+        #region IoC
 
-            //services 
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IActionService, ActionService>();
+        //services 
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAccessService, AccessService>();
+        services.AddScoped<IRoutineService, RoutineService>();
+        services.AddScoped<IMessageSender, MessageSender>();
+        services.AddScoped<IViewRenderService, ViewRenderService>();
 
-            //repository
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IActionRepository, ActionRepository>();
+        //repository
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAccessRepository, AccessRepository>();
+        services.AddScoped<IRoutineRepository, RoutinesRepository>();
 
-            #endregion
+        #endregion
 
-            #region Authentication
+        #region Authentication
 
-            services.AddAuthentication(options =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie(options =>
-            {
-                options.LoginPath = "/Login";
-                options.LogoutPath = "/Logout";
-                options.ExpireTimeSpan = TimeSpan.FromDays(30);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.AccessDeniedPath = "/";
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                };
             });
 
-            #endregion
+        #endregion
 
-            #region Cryptography
+        #region CORS
 
-            services.AddDataProtection()
-                .DisableAutomaticKeyGeneration()
-                .SetDefaultKeyLifetime(new TimeSpan(15, 0, 0, 0));
+        services.AddCors(options =>
+        {
+            options.AddPolicy("EnableCors", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .Build();
+            });
+        });
 
-            #endregion
+        #endregion
 
-            #region Configure
 
-            // should ssl site
-            services.Configure<MvcOptions>(options => { options.Filters.Add(new RequireHttpsAttribute()); });
 
-            #endregion
+        #region Configure
 
-            return services;
-        }
+        // should ssl site
+        services.Configure<MvcOptions>(options => { options.Filters.Add(new RequireHttpsAttribute()); });
+
+        #endregion
+
+        return services;
     }
 }

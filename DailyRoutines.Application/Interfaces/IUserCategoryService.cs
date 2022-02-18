@@ -1,7 +1,6 @@
-﻿namespace DailyRoutines.Application.Interfaces
+﻿namespace DailyRoutines.Application.Interfaces;
+
+public interface IUserCategoryService
 {
-    public interface IUserCategoryService
-    {
         
-    }
 }

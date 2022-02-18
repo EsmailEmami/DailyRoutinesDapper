@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace DailyRoutines.Infrastructure.Migrations
 {
     [DbContext(typeof(DailyRoutinesDbContext))]
@@ -15,13 +17,51 @@ namespace DailyRoutines.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.6")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.Action", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Access.Role", b =>
                 {
-                    b.Property<Guid>("ActionId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Access.UserRole", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Routine.Action", b =>
+                {
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -38,37 +78,66 @@ namespace DailyRoutines.Infrastructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CreatePersianDay")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreatePersianMonth")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreatePersianYear")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastUpdateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("UserCategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ActionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserCategoryId");
 
                     b.ToTable("Actions");
                 });
 
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.Role", b =>
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Routine.UserCategory", b =>
                 {
-                    b.Property<Guid>("RoleId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RoleName")
+                    b.Property<string>("CategoryTitle")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("RoleId");
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
-                    b.ToTable("Roles");
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserCategories");
                 });
 
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.User", b =>
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.User.User", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -85,88 +154,32 @@ namespace DailyRoutines.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime>("LastUpdateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.UserCategory", b =>
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Access.UserRole", b =>
                 {
-                    b.Property<Guid>("UserCategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CategoryTitle")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserCategoryId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserCategories");
-                });
-
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.UserRole", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.Action", b =>
-                {
-                    b.HasOne("DailyRoutines.Domain.Entities.UserCategory", "UserCategory")
-                        .WithMany()
-                        .HasForeignKey("UserCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserCategory");
-                });
-
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.UserCategory", b =>
-                {
-                    b.HasOne("DailyRoutines.Domain.Entities.User", "User")
-                        .WithMany("UserCategories")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.UserRole", b =>
-                {
-                    b.HasOne("DailyRoutines.Domain.Entities.Role", "Role")
+                    b.HasOne("DailyRoutines.Domain.Entities.Access.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DailyRoutines.Domain.Entities.User", "User")
+                    b.HasOne("DailyRoutines.Domain.Entities.User.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -177,7 +190,34 @@ namespace DailyRoutines.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DailyRoutines.Domain.Entities.User", b =>
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Routine.Action", b =>
+                {
+                    b.HasOne("DailyRoutines.Domain.Entities.Routine.UserCategory", "UserCategory")
+                        .WithMany("Actions")
+                        .HasForeignKey("UserCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserCategory");
+                });
+
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Routine.UserCategory", b =>
+                {
+                    b.HasOne("DailyRoutines.Domain.Entities.User.User", "User")
+                        .WithMany("UserCategories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.Routine.UserCategory", b =>
+                {
+                    b.Navigation("Actions");
+                });
+
+            modelBuilder.Entity("DailyRoutines.Domain.Entities.User.User", b =>
                 {
                     b.Navigation("UserCategories");
 

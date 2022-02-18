@@ -1,17 +1,20 @@
-﻿using DailyRoutines.Application.Enums;
-using DailyRoutines.Domain.DTOs.User;
-using DailyRoutines.Domain.Entities;
+﻿using DailyRoutines.Domain.DTOs.User;
+using DailyRoutines.Domain.Entities.User;
+using DailyRoutines.Domain.Enums;
 using System;
-using System.Threading.Tasks;
 
-namespace DailyRoutines.Application.Interfaces
+namespace DailyRoutines.Application.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<ResultTypes> AddUserAsync(User user);
-        Task<bool> IsUserExistAsync(string email, string password);
-        Task<User> GetUserByEmailAsync(string email);
+    ResultTypes AddUser(User user);
+    ResultTypes EditUser(User user);
 
-        Task<UserDashboardForShow> GetUserDashboardAsync(Guid userId);
-    }
+    bool IsUserExist(string email, string password);
+    User GetUserByEmail(string email);
+    User GetUserById(Guid userId);
+    bool IsUserPhoneNumberExists(string phoneNumber);
+    bool IsUserEmailExists(string email);
+
+    UserDashboardDTO GetUserDashboard(Guid userId);
 }
