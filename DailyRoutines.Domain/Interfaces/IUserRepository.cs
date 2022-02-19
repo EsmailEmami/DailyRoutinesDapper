@@ -17,6 +17,7 @@ namespace DailyRoutines.Domain.Interfaces
         bool IsUserEmailExists(string email);
 
         UserDashboardDTO GetUserDashboard(Guid userId);
+        EditUserDTO GetUserForEdit(Guid userId);
 
         FilterUsersDTO GetUsers(FilterUsersDTO filter);
 

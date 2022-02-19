@@ -32,7 +32,7 @@ public class UsersManagerController : SiteBaseController
     {
         var users = _userService.GetUsers(filter);
 
-        return users == null ? JsonResponseStatus.NotFound("کاربری یافت نشد.") : 
+        return users == null ? JsonResponseStatus.NotFound("کاربری یافت نشد.") :
             JsonResponseStatus.Success(users);
     }
 
@@ -57,9 +57,7 @@ public class UsersManagerController : SiteBaseController
     public IActionResult BLockUser([FromQuery] Guid userId)
     {
         if (userId.IsEmpty())
-        {
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
-        }
 
 
         var user = _userService.GetUserById(userId);
@@ -105,6 +103,59 @@ public class UsersManagerController : SiteBaseController
 
 
         return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
+    }
+
+    #endregion
+
+    #region Edit User
+
+    [HttpGet("[action]")]
+    public IActionResult EditUser([FromQuery] Guid userId)
+    {
+        if (userId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+        var data = _userService.GetUserForEdit(userId);
+
+        if (data == null)
+            JsonResponseStatus.NotFound("کاربری یافت نشد.");
+
+        return JsonResponseStatus.Success(data);
+    }
+
+    [HttpPut("[action]")]
+    public IActionResult EditUser([FromBody] EditUserDTO userData)
+    {
+        if (!ModelState.IsValid)
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+
+        var user = _userService.GetUserById(userData.UserId);
+
+        if (user == null)
+            JsonResponseStatus.NotFound("کاربری یافت نشد.");
+
+        user.FirstName = userData.FirstName;
+        user.LastName = userData.LastName;
+        user.Email = userData.Email;
+        user.PhoneNumber = user.PhoneNumber;
+
+        var editUser = _userService.EditUser(user);
+
+        if (editUser != ResultTypes.Successful)
+            return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
+
+        var removeRoles = _accessService.RemoveAllUserRoles(user.Id);
+        if (removeRoles != ResultTypes.Successful)
+            return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
+
+
+        var addRoles = _accessService.AddUserRole(user.Id, userData.Roles);
+        if (addRoles != ResultTypes.Successful)
+            return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
+
+
+        return JsonResponseStatus.Success();
     }
 
     #endregion

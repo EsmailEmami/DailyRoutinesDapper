@@ -72,6 +72,9 @@ public class UserService : IUserService
     public FilterUsersDTO GetUsers(FilterUsersDTO filter) =>
         _user.GetUsers(filter);
 
+    public EditUserDTO GetUserForEdit(Guid userId) =>
+        _user.GetUserForEdit(userId);
+
     public UserDashboardDTO GetUserDashboard(Guid userId) =>
         _user.GetUserDashboard(userId);
 }

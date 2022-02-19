@@ -17,6 +17,7 @@ public interface IUserService
     bool IsUserEmailExists(string email);
 
     FilterUsersDTO GetUsers(FilterUsersDTO filter);
+    EditUserDTO GetUserForEdit(Guid userId);
 
     UserDashboardDTO GetUserDashboard(Guid userId);
 }

@@ -8,7 +8,9 @@ using DailyRoutines.Domain.Interfaces;
 using DailyRoutines.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using DailyRoutines.Domain.DTOs.Common;
 
 namespace DailyRoutines.Infrastructure.Repositories;
 
@@ -111,9 +113,21 @@ public class AccessRepository : IAccessRepository
     public void AddRole(Role role) =>
         _context.Roles.Add(role);
 
-    public void updateRole(Role role) =>
+    public void UpdateRole(Role role) =>
         _context.Roles.Update(role);
 
-    public void saveChanges() =>
+    public List<ItemsForSelectDTO> GetRolesForSelect() =>
+        _context.Roles.Select(c => new ItemsForSelectDTO(c.Id, c.RoleName)).ToList();
+
+    public List<UserRole> GetUserRoles(Guid userId) =>
+        _context.UserRoles.Where(c => c.UserId == userId).ToList();
+
+    public void RemoveUserRole(UserRole userRole) =>
+        _context.UserRoles.Remove(userRole);
+
+    public void AddUserRole(UserRole userRole) =>
+        _context.UserRoles.Add(userRole);
+
+    public void SaveChanges() =>
         _context.SaveChanges();
 }

@@ -53,6 +53,18 @@ public class UserRepository : IUserRepository
                 PhoneNumber = c.PhoneNumber,
             }).SingleOrDefault();
 
+    public EditUserDTO GetUserForEdit(Guid userId) =>
+        _context.Users.Where(c => c.Id == userId)
+            .Select(c => new EditUserDTO()
+            {
+                UserId = c.Id,
+                Email = c.Email,
+                FirstName = c.FirstName,
+                LastName = c.LastName,
+                PhoneNumber = c.PhoneNumber,
+                Roles = c.UserRoles.Select(r=> r.RoleId).ToList()
+            }).SingleOrDefault();
+
     public FilterUsersDTO GetUsers(FilterUsersDTO filter)
     {
         IQueryable<User> users = _context.Users;

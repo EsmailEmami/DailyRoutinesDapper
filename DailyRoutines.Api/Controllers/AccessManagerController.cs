@@ -97,4 +97,19 @@ public class AccessManagerController : SiteBaseController
     }
 
     #endregion
+
+    #region Roles For Select
+
+    [HttpGet("[action]")]
+    public IActionResult RolesForSelect()
+    {
+        var data = _accessService.GetRolesForSelect();
+
+        if (!data.Any())
+            return JsonResponseStatus.NotFound("مقامی برای نمایش یافت نشد.");
+
+        return JsonResponseStatus.Success(data);
+    }
+
+    #endregion
 }
