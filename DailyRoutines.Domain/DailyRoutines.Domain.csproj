@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Common\" />
+    <Folder Include="DTOs\Access\" />
     <Folder Include="DTOs\Paging\" />
     <Folder Include="Entities\Common\" />
   </ItemGroup>

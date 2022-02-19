@@ -1,15 +1,12 @@
-﻿using DailyRoutines.Domain.DTOs.User;
+﻿using DailyRoutines.Application.Extensions;
+using DailyRoutines.Application.Generator;
+using DailyRoutines.Domain.DTOs.User;
 using DailyRoutines.Domain.Entities.User;
 using DailyRoutines.Domain.Interfaces;
 using DailyRoutines.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using DailyRoutines.Application.Convertors;
-using DailyRoutines.Application.Extensions;
-using DailyRoutines.Application.Generator;
-using DailyRoutines.Domain.DTOs.Routine;
 
 namespace DailyRoutines.Infrastructure.Repositories;
 
@@ -38,7 +35,7 @@ public class UserRepository : IUserRepository
 
     public User GetUserById(Guid userId) =>
         _context.Users.IgnoreQueryFilters()
-            .SingleOrDefault(c=> c.Id == userId);
+            .SingleOrDefault(c => c.Id == userId);
 
     public bool IsUserPhoneNumberExists(string phoneNumber) =>
         _context.Users.Any(c => c.PhoneNumber == phoneNumber);
@@ -87,11 +84,11 @@ public class UserRepository : IUserRepository
                     break;
                 }
             default:
-            {
-                filter.Type = "active";
+                {
+                    filter.Type = "active";
 
-                break;
-            }
+                    break;
+                }
         }
 
 
@@ -106,7 +103,7 @@ public class UserRepository : IUserRepository
         var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
 
         var categories = users
-            .Select(c => new UsersListDTO(c.Id, c.FullName, c.PhoneNumber, c.Email,c.IsBlock))
+            .Select(c => new UsersListDTO(c.Id, c.FullName, c.PhoneNumber, c.Email, c.IsBlock))
             .Paging(pager).ToList();
 
         return filter.SetItems(categories)

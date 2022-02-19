@@ -14,10 +14,12 @@ public class UsersManagerController : SiteBaseController
     #region constractor
 
     private readonly IUserService _userService;
+    private readonly IAccessService _accessService;
 
-    public UsersManagerController(IUserService userService)
+    public UsersManagerController(IUserService userService, IAccessService accessService)
     {
         _userService = userService;
+        _accessService = accessService;
     }
 
     #endregion
@@ -31,6 +33,19 @@ public class UsersManagerController : SiteBaseController
         var users = _userService.GetUsers(filter);
 
         return users == null ? JsonResponseStatus.NotFound("کاربری یافت نشد.") : 
+            JsonResponseStatus.Success(users);
+    }
+
+    #endregion
+
+    #region Get Admin Users
+
+    [HttpGet("[action]")]
+    public IActionResult AdminUsers([FromQuery] FilterUsersDTO filter)
+    {
+        var users = _accessService.GetUsersWithRole(filter);
+
+        return users == null ? JsonResponseStatus.NotFound("کاربری یافت نشد.") :
             JsonResponseStatus.Success(users);
     }
 
