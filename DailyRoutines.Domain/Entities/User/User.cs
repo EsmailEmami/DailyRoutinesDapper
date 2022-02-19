@@ -33,6 +33,9 @@ namespace DailyRoutines.Domain.Entities.User
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Password { get; set; }
 
+        [Required]
+        public bool IsBlock { get; set; } = false;
+
         [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
 

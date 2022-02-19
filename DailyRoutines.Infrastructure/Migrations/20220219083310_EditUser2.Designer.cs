@@ -4,6 +4,7 @@ using DailyRoutines.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DailyRoutines.Infrastructure.Migrations
 {
     [DbContext(typeof(DailyRoutinesDbContext))]
-    partial class DailyRoutinesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220219083310_EditUser2")]
+    partial class EditUser2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

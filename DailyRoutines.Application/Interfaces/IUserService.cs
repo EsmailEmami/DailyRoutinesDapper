@@ -16,5 +16,7 @@ public interface IUserService
     bool IsUserPhoneNumberExists(string phoneNumber);
     bool IsUserEmailExists(string email);
 
+    FilterUsersDTO GetUsers(FilterUsersDTO filter);
+
     UserDashboardDTO GetUserDashboard(Guid userId);
 }

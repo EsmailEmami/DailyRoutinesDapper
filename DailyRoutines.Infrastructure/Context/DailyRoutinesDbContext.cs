@@ -27,6 +27,15 @@ public class DailyRoutinesDbContext : DbContext
         modelBuilder.Entity<UserCategory>()
             .HasQueryFilter(u => !u.IsDelete);
 
+        modelBuilder.Entity<Action>()
+            .HasQueryFilter(u => !u.UserCategory.IsDelete);
+
+        modelBuilder.Entity<User>()
+            .HasQueryFilter(u => !u.IsBlock);
+
+        modelBuilder.Entity<UserRole>()
+            .HasQueryFilter(u => !u.User.IsBlock);
+
         base.OnModelCreating(modelBuilder);
     }
 }

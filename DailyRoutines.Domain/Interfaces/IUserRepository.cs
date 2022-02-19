@@ -18,6 +18,8 @@ namespace DailyRoutines.Domain.Interfaces
 
         UserDashboardDTO GetUserDashboard(Guid userId);
 
+        FilterUsersDTO GetUsers(FilterUsersDTO filter);
+
         void SaveChanges();
     }
 }

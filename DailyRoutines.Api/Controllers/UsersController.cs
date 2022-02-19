@@ -70,14 +70,14 @@ public class UsersController : SiteBaseController
     [HttpPost("[action]")]
     public IActionResult AddPhoneNumber([FromQuery] string phoneNumber)
     {
+        if (_userService.IsUserPhoneNumberExists(phoneNumber))
+            return JsonResponseStatus.Error("شماره تلفن شما از قبل ثبت شده است.");
+
+
         var user = _userService.GetUserById(User.GetUserId());
 
         if (user == null)
             return JsonResponseStatus.NotFound("کاربری یافت نشد.");
-
-        if (user.PhoneNumber != null)
-            return JsonResponseStatus.Error("شماره تلفن شما از قبل ثبت شده است.");
-
 
         user.PhoneNumber = phoneNumber;
 

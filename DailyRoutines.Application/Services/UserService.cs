@@ -69,6 +69,9 @@ public class UserService : IUserService
     public bool IsUserEmailExists(string email) =>
         _user.IsUserEmailExists(email);
 
+    public FilterUsersDTO GetUsers(FilterUsersDTO filter) =>
+        _user.GetUsers(filter);
+
     public UserDashboardDTO GetUserDashboard(Guid userId) =>
         _user.GetUserDashboard(userId);
 }
