@@ -2,7 +2,6 @@
 using DailyRoutines.Application.Convertors;
 using DailyRoutines.Application.Extensions;
 using DailyRoutines.Application.Interfaces;
-using DailyRoutines.Application.Security;
 using DailyRoutines.Domain.DTOs.Routine;
 using DailyRoutines.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -10,45 +9,15 @@ using Action = DailyRoutines.Domain.Entities.Routine.Action;
 
 namespace DailyRoutines.Api.Controllers;
 
-[Access]
-public class ActionsController : SiteBaseController
+public class ActionsManagerController : SiteBaseController
 {
     #region constrcuctor
 
     private readonly IRoutineService _routineService;
 
-    public ActionsController(IRoutineService routineService)
+    public ActionsManagerController(IRoutineService routineService)
     {
         _routineService = routineService;
-    }
-
-    #endregion
-
-    #region GetActionsMonth
-
-    //public IActionResult GetActionsMonthOfCategory(Guid categoryId)
-    //{
-    //    if (BaseCheck(categoryId))
-    //        return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
-
-    //    return null;
-    //}
-
-    #endregion
-
-    #region Get Last Actions
-
-    [HttpGet("[action]")]
-    public IActionResult LastActions([FromQuery] FilterUserLastActionsDTO filter)
-    {
-        filter.UserId = User.GetUserId();
-
-        var actions = _routineService.GetLastUserActions(filter);
-
-        if (actions == null)
-            return JsonResponseStatus.NotFound("متاسفانه اطلاعاتی یافت نشد.");
-
-        return JsonResponseStatus.Success(actions);
     }
 
     #endregion
@@ -58,7 +27,7 @@ public class ActionsController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult CategoryActions([FromQuery] FilterActionsDTO filter)
     {
-        if (!BaseCheck(filter.CategoryId))
+        if (filter.CategoryId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var actions = _routineService.GetActionsOfCategory(filter);
@@ -71,6 +40,42 @@ public class ActionsController : SiteBaseController
 
     #endregion
 
+
+    #region Get Last Actions
+
+    [HttpGet("[action]")]
+    public IActionResult UserLastActions([FromQuery] FilterUserLastActionsDTO filter)
+    {
+        if (filter.UserId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+        var actions = _routineService.GetLastUserActions(filter);
+
+        if (actions == null)
+            return JsonResponseStatus.NotFound("متاسفانه اطلاعاتی یافت نشد.");
+
+        return JsonResponseStatus.Success(actions);
+    }
+
+    #endregion
+
+    #region Action Years
+
+    [HttpGet("[action]")]
+    public IActionResult YearsOfActions([FromQuery] Guid userId)
+    {
+        if (userId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+
+        var data = _routineService.GetYearsOfActions(userId);
+
+        return !data.Any() ? JsonResponseStatus.NotFound("متاسفانه اطلاعاتی یافت نشد.") :
+            JsonResponseStatus.Success(data);
+    }
+
+    #endregion
+
     #region New Action
 
     [HttpPost("[action]")]
@@ -79,8 +84,6 @@ public class ActionsController : SiteBaseController
         if (!ModelState.IsValid)
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
-        if (!BaseCheck(action.UserCategoryId))
-            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var newAction = new Action()
         {
@@ -114,7 +117,7 @@ public class ActionsController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult EditAction([FromQuery] Guid actionId)
     {
-        if (!_routineService.IsUserActionExist(User.GetUserId(), actionId))
+        if (actionId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var action = _routineService.GetActionForEdit(actionId);
@@ -130,9 +133,6 @@ public class ActionsController : SiteBaseController
     public IActionResult EditAction([FromBody] EditActionDTO action)
     {
         if (!ModelState.IsValid)
-            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
-
-        if (!_routineService.IsUserActionExist(User.GetUserId(), action.ActionId))
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var defaultAction = _routineService.GetActionById(action.ActionId);
@@ -161,7 +161,7 @@ public class ActionsController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult ActionDetail([FromQuery] Guid actionId)
     {
-        if (!_routineService.IsUserActionExist(User.GetUserId(), actionId))
+        if (actionId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
 
@@ -180,49 +180,23 @@ public class ActionsController : SiteBaseController
     [HttpDelete("[action]")]
     public IActionResult DeleteAction([FromQuery] Guid actionId)
     {
-        if (!_routineService.IsUserActionExist(User.GetUserId(), actionId))
+        if (actionId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var action = _routineService.GetActionById(actionId);
 
+        if (action == null)
+            return JsonResponseStatus.NotFound("متاسفانه فعالیت یافت نشد.");
+
+
         var editAction = _routineService.DeleteAction(action);
 
         if (editAction == ResultTypes.Failed)
-            return JsonResponseStatus.Error(new
-            {
-                message = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید."
-            });
+            return JsonResponseStatus.Error("مشکلی پیش آمده است. لطفا دوباره تلاش کنید.");
 
 
         return JsonResponseStatus.Success();
     }
 
     #endregion
-
-    #region Action Years
-
-    [HttpGet("[action]")]
-    public IActionResult YearsOfActions()
-    {
-        var data = _routineService.GetYearsOfActions(User.GetUserId());
-
-        if (!data.Any())
-            return JsonResponseStatus.NotFound("متاسفانه اطلاعاتی یافت نشد.");
-
-        return JsonResponseStatus.Success(data);
-    }
-
-    #endregion
-
-    private bool BaseCheck(Guid categoryId)
-    {
-        if (categoryId.IsEmpty())
-            return false;
-
-
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
-            return false;
-
-        return true;
-    }
 }

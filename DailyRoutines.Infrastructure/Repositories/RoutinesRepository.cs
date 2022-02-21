@@ -104,6 +104,9 @@ public class RoutinesRepository : IRoutineRepository
             .Select(c => new ItemsForSelectDTO(c.Id, c.CategoryTitle))
             .ToList();
 
+    public Guid GetUserIdOfCategory(Guid categoryId) =>
+        _context.UserCategories.SingleOrDefault(c => c.Id == categoryId)!.UserId;
+
     public FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter)
     {
         IQueryable<Action> actionsQuery = _context.Actions
@@ -249,6 +252,18 @@ public class RoutinesRepository : IRoutineRepository
     public CategoryDetailDTO GetCategoryDetail(Guid categoryId) =>
         _context.UserCategories.Where(c => c.Id == categoryId)
             .Select(c => new CategoryDetailDTO(
+                c.Id,
+                c.CategoryTitle,
+                c.LastUpdateDate.ToPersianDateTime(),
+                c.Actions.Count))
+            .SingleOrDefault();
+
+    public CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId) =>
+        _context.UserCategories.Where(c => c.Id == categoryId)
+            .IgnoreQueryFilters()
+            .Select(c => new CategoryDetailForAdminDTO(
+                c.UserId,
+                c.User.FullName,
                 c.Id,
                 c.CategoryTitle,
                 c.LastUpdateDate.ToPersianDateTime(),

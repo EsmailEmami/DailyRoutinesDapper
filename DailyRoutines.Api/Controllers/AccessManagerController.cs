@@ -1,4 +1,5 @@
 ﻿using DailyRoutines.Application.Common;
+using DailyRoutines.Application.Extensions;
 using DailyRoutines.Application.Interfaces;
 using DailyRoutines.Application.Security;
 using DailyRoutines.Domain.DTOs.Access;
@@ -14,10 +15,12 @@ public class AccessManagerController : SiteBaseController
     #region constractor
 
     private readonly IAccessService _accessService;
+    private readonly IUserService _userService;
 
-    public AccessManagerController(IAccessService accessService)
+    public AccessManagerController(IAccessService accessService, IUserService userService)
     {
         _accessService = accessService;
+        _userService = userService;
     }
 
     #endregion
@@ -65,6 +68,9 @@ public class AccessManagerController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult EditRole([FromQuery] Guid roleId)
     {
+        if (roleId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
         var role = _accessService.GetRoleForEdit(roleId);
 
         if (role == null)
@@ -109,6 +115,46 @@ public class AccessManagerController : SiteBaseController
             return JsonResponseStatus.NotFound("مقامی برای نمایش یافت نشد.");
 
         return JsonResponseStatus.Success(data);
+    }
+
+    #endregion
+
+
+    #region User Roles
+
+    [HttpGet("[action]")]
+    public IActionResult UserRoles([FromQuery] Guid userId, [FromQuery] FilterRolesDTO filter)
+    {
+        if (userId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+        if (!_userService.IsUserExist(userId))
+            return JsonResponseStatus.NotFound("کاربری یافت نشد.");
+
+        var roles = _accessService.GetUserRoles(userId, filter);
+
+        return roles == null ? JsonResponseStatus.NotFound("مقامی یافت نشد.") :
+            JsonResponseStatus.Success(roles);
+    }
+
+    #endregion
+
+    #region Delete User From Role
+
+    [HttpDelete("[action]")]
+    public IActionResult DeleteRoleFromUser([FromQuery] Guid userId, [FromQuery] Guid roleId)
+    {
+        if (roleId.IsEmpty() || userId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+
+        var deleteUserRole = _accessService.DeleteUserRole(userId, roleId);
+
+        if (deleteUserRole != ResultTypes.Successful)
+            return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
+
+        return JsonResponseStatus.Success();
+
     }
 
     #endregion

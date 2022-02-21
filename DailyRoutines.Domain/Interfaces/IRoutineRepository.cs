@@ -22,6 +22,8 @@ namespace DailyRoutines.Domain.Interfaces
 
         List<ItemsForSelectDTO> GetUserCategoriesForSelect(Guid userId);
 
+        Guid GetUserIdOfCategory(Guid categoryId);
+
         #endregion
 
 
@@ -46,6 +48,7 @@ namespace DailyRoutines.Domain.Interfaces
         bool IsUserActionExist(Guid userId, Guid actionId);
 
         CategoryDetailDTO GetCategoryDetail(Guid categoryId);
+        CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId);
 
         void SaveChanges();
     }

@@ -7,6 +7,7 @@ using DailyRoutines.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using DailyRoutines.Application.Convertors;
 
 namespace DailyRoutines.Infrastructure.Repositories;
 
@@ -29,6 +30,10 @@ public class UserRepository : IUserRepository
 
     public bool IsUserExist(string email, string password) =>
         _context.Users.Any(c => c.Email == email && c.Password == password);
+
+    public bool IsUserExist(Guid userId) =>
+        _context.Users.IgnoreQueryFilters()
+            .Any(c => c.Id == userId);
 
     public User GetUserByEmail(string email) =>
         _context.Users.SingleOrDefault(c => c.Email == email);
@@ -55,6 +60,7 @@ public class UserRepository : IUserRepository
 
     public EditUserDTO GetUserForEdit(Guid userId) =>
         _context.Users.Where(c => c.Id == userId)
+            .IgnoreQueryFilters()
             .Select(c => new EditUserDTO()
             {
                 UserId = c.Id,
@@ -62,8 +68,21 @@ public class UserRepository : IUserRepository
                 FirstName = c.FirstName,
                 LastName = c.LastName,
                 PhoneNumber = c.PhoneNumber,
-                Roles = c.UserRoles.Select(r=> r.RoleId).ToList()
+                Roles = c.UserRoles.Select(r => r.RoleId).ToList()
             }).SingleOrDefault();
+
+    public UserInformationDTO GetUserInformation(Guid userId) =>
+        _context.Users.Where(c => c.Id == userId)
+            .Select(c => new UserInformationDTO(
+                c.Id,
+                c.FirstName,
+                c.LastName,
+                c.PhoneNumber,
+                c.Email,
+                c.CreateDate.ToPersianDateTime(),
+                c.IsBlock))
+            .IgnoreQueryFilters()
+            .SingleOrDefault();
 
     public FilterUsersDTO GetUsers(FilterUsersDTO filter)
     {

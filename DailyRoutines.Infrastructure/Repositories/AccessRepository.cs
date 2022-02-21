@@ -99,6 +99,28 @@ public class AccessRepository : IAccessRepository
             .SetPaging(pager);
     }
 
+    public FilterRolesDTO GetUserRoles(Guid userId, FilterRolesDTO filter)
+    {
+        IQueryable<Role> roles = _context.UserRoles
+            .Where(c => c.UserId == userId)
+            .Select(c => c.Role)
+            .IgnoreQueryFilters();
+
+        if (!string.IsNullOrEmpty(filter.Search))
+            roles = roles.Where(c => c.RoleName.Contains(filter.Search));
+
+        int pagesCount = (int)Math.Ceiling(roles.Count() / (double)filter.TakeEntity);
+
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var rolesList = roles
+            .Select(c => new RolesListDTO(c.Id, c.RoleName))
+            .Paging(pager).ToList();
+
+        return filter.SetItems(rolesList)
+            .SetPaging(pager);
+    }
+
     public EditRoleDTO GetRoleForEdit(Guid roleId) =>
         _context.Roles.Where(c => c.Id == roleId)
             .Select(c => new EditRoleDTO()
@@ -127,6 +149,10 @@ public class AccessRepository : IAccessRepository
 
     public void AddUserRole(UserRole userRole) =>
         _context.UserRoles.Add(userRole);
+
+    public UserRole GetUserRole(Guid userId, Guid roleId) =>
+        _context.UserRoles.IgnoreQueryFilters()
+            .SingleOrDefault(c => c.UserId == userId && c.RoleId == roleId);
 
     public void SaveChanges() =>
         _context.SaveChanges();

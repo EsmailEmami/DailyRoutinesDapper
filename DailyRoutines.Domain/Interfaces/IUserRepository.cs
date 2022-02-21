@@ -11,6 +11,7 @@ namespace DailyRoutines.Domain.Interfaces
         void RemoveUser(User user);
 
         bool IsUserExist(string email, string password);
+        bool IsUserExist(Guid userId);
         User GetUserByEmail(string email);
         User GetUserById(Guid userId);
         bool IsUserPhoneNumberExists(string phoneNumber);
@@ -18,6 +19,8 @@ namespace DailyRoutines.Domain.Interfaces
 
         UserDashboardDTO GetUserDashboard(Guid userId);
         EditUserDTO GetUserForEdit(Guid userId);
+
+        UserInformationDTO GetUserInformation(Guid userId);
 
         FilterUsersDTO GetUsers(FilterUsersDTO filter);
 

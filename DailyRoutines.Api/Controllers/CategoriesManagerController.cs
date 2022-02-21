@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace DailyRoutines.Api.Controllers;
 
 [Access]
-public class CategoriesController : SiteBaseController
+public class CategoriesManagerController : SiteBaseController
 {
     #region constructor
 
     private readonly IRoutineService _routineService;
 
-    public CategoriesController(IRoutineService routineService)
+    public CategoriesManagerController(IRoutineService routineService)
     {
         _routineService = routineService;
     }
@@ -26,7 +26,7 @@ public class CategoriesController : SiteBaseController
     #region Add Category
 
     [HttpPost("[action]")]
-    public IActionResult AddCategory([FromBody] AddCategoryDTO categoryData)
+    public IActionResult AddCategory([FromBody] AddCategoryFromAdminDTO categoryData)
     {
         if (!ModelState.IsValid)
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
@@ -36,7 +36,7 @@ public class CategoriesController : SiteBaseController
             CategoryTitle = categoryData.CategoryTitle,
             CreateDate = DateTime.Now,
             LastUpdateDate = DateTime.Now,
-            UserId = User.GetUserId(),
+            UserId = categoryData.UserId,
             IsDelete = false
         };
 
@@ -56,7 +56,7 @@ public class CategoriesController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult EditCategory([FromQuery] Guid categoryId)
     {
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
+        if (categoryId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var category = _routineService.GetCategoryForEdit(categoryId);
@@ -74,15 +74,13 @@ public class CategoriesController : SiteBaseController
         if (!ModelState.IsValid)
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryData.CategoryId))
-            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
-
         var category = _routineService.GetCategoryById(categoryData.CategoryId);
 
         if (category == null)
             return JsonResponseStatus.NotFound("دسته بندی یافت نشد.");
 
         category.CategoryTitle = categoryData.CategoryTitle;
+        category.LastUpdateDate = DateTime.Now;
 
         var editCategory = _routineService.EditCategory(category);
 
@@ -100,7 +98,7 @@ public class CategoriesController : SiteBaseController
     [HttpDelete("[action]")]
     public IActionResult DeleteCategory([FromQuery] Guid categoryId)
     {
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
+        if (categoryId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var deleteCategory = _routineService.DeleteCategory(categoryId);
@@ -118,7 +116,7 @@ public class CategoriesController : SiteBaseController
     [HttpPut("[action]")]
     public IActionResult RemoveCategory([FromQuery] Guid categoryId)
     {
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
+        if (categoryId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var category = _routineService.GetCategoryById(categoryId);
@@ -144,7 +142,7 @@ public class CategoriesController : SiteBaseController
     [HttpPut("[action]")]
     public IActionResult ReturnCategory([FromQuery] Guid categoryId)
     {
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
+        if (categoryId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var category = _routineService.GetCategoryById(categoryId);
@@ -170,26 +168,11 @@ public class CategoriesController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult UserCategories([FromQuery] FilterCategoriesDTO filter)
     {
-        filter.UserId = User.GetUserId();
+        if (filter.UserId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
 
         var categories = _routineService.GetCategories(filter);
-
-        return categories == null ? JsonResponseStatus.NotFound() : JsonResponseStatus.Success(categories);
-    }
-
-    #endregion
-
-    #region Recycle User Categories
-
-    [HttpGet("[action]")]
-    public IActionResult UserRecycleCategories([FromQuery] FilterCategoriesDTO filter)
-    {
-        if (filter.UserId.IsEmpty())
-            filter.UserId = User.GetUserId();
-
-
-        var categories = _routineService.GetRecycleCategories(filter);
 
         return categories == null ? JsonResponseStatus.NotFound() : JsonResponseStatus.Success(categories);
     }
@@ -201,10 +184,10 @@ public class CategoriesController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult CategoryDetail([FromQuery] Guid categoryId)
     {
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
+        if (categoryId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
-        var category = _routineService.GetCategoryDetail(categoryId);
+        var category = _routineService.GetCategoryDetailForAdmin(categoryId);
 
         if (category == null)
             return JsonResponseStatus.NotFound();
@@ -214,48 +197,33 @@ public class CategoriesController : SiteBaseController
 
     #endregion
 
-    #region Category Actions Month List
-
-    [HttpGet("[action]")]
-    public IActionResult CategoryActionsMonths(Guid categoryId)
-    {
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
-            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
-
-        var data = _routineService.GetMonthsOfCategoryActions(categoryId);
-
-        if (!data.Any())
-            return JsonResponseStatus.NotFound();
-
-        return JsonResponseStatus.Success(data);
-    }
-
-    #endregion
 
     #region Get Category Actions Year
 
     [HttpGet("[action]")]
     public IActionResult CategoryActionsYear([FromQuery] Guid categoryId)
     {
-        if (!_routineService.IsUserCategoryExist(User.GetUserId(), categoryId))
+        if (categoryId.IsEmpty())
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
         var data = _routineService.GetYearsOfCategoryActions(categoryId);
 
-        if (!data.Any())
-            return JsonResponseStatus.NotFound("متاسفانه اطلاعاتی یافت نشد.");
-
-        return JsonResponseStatus.Success(data);
+        return !data.Any() ? JsonResponseStatus.NotFound("متاسفانه اطلاعاتی یافت نشد.") : 
+            JsonResponseStatus.Success(data);
     }
 
     #endregion
 
+
     #region Categories For Select
 
     [HttpGet("[action]")]
-    public IActionResult UserCategoriesForSelect()
+    public IActionResult UserCategoriesForSelect([FromQuery] Guid userId)
     {
-        var data = _routineService.GetUserCategoriesForSelect(User.GetUserId());
+        if (userId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+        var data = _routineService.GetUserCategoriesForSelect(userId);
 
         if (!data.Any())
             return JsonResponseStatus.NotFound("متاسفانه اطلاعاتی یافت نشد.");

@@ -57,6 +57,9 @@ public class UserService : IUserService
         return _user.IsUserExist(email, password);
     }
 
+    public bool IsUserExist(Guid userId) =>
+        _user.IsUserExist(userId);
+
     public User GetUserByEmail(string email) =>
         _user.GetUserByEmail(email.Fixed());
 
@@ -74,6 +77,9 @@ public class UserService : IUserService
 
     public EditUserDTO GetUserForEdit(Guid userId) =>
         _user.GetUserForEdit(userId);
+
+    public UserInformationDTO GetUserInformation(Guid userId) =>
+        _user.GetUserInformation(userId);
 
     public UserDashboardDTO GetUserDashboard(Guid userId) =>
         _user.GetUserDashboard(userId);

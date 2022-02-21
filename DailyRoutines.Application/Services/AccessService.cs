@@ -26,6 +26,9 @@ public class AccessService : IAccessService
     public FilterRolesDTO GetRoles(FilterRolesDTO filter) =>
         _role.GetRoles(filter);
 
+    public FilterRolesDTO GetUserRoles(Guid userId, FilterRolesDTO filter) =>
+        _role.GetUserRoles(userId, filter);
+
     public EditRoleDTO GetRoleForEdit(Guid roleId) =>
         _role.GetRoleForEdit(roleId);
 
@@ -106,6 +109,28 @@ public class AccessService : IAccessService
                 _role.AddUserRole(userRole);
             }
 
+
+            _role.SaveChanges();
+
+            return ResultTypes.Successful;
+        }
+        catch
+        {
+            return ResultTypes.Failed;
+        }
+    }
+
+    public ResultTypes DeleteUserRole(Guid userId, Guid roleId)
+    {
+        try
+        {
+            var userRole = _role.GetUserRole(userId, roleId);
+
+            if (userRole == null)
+                return ResultTypes.Failed;
+
+
+            _role.RemoveUserRole(userRole);
 
             _role.SaveChanges();
 

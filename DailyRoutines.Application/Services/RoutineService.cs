@@ -52,6 +52,9 @@ public class RoutineService : IRoutineService
     public UserCategory GetCategoryById(Guid categoryId) =>
         _routine.GetCategoryById(categoryId);
 
+    public Guid GetUserIdOfCategory(Guid categoryId) =>
+        _routine.GetUserIdOfCategory(categoryId);
+
     public ResultTypes AddAction(Action action)
     {
         try
@@ -184,6 +187,9 @@ public class RoutineService : IRoutineService
 
     public CategoryDetailDTO GetCategoryDetail(Guid categoryId) =>
         _routine.GetCategoryDetail(categoryId);
+
+    public CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId) =>
+        _routine.GetCategoryDetailForAdmin(categoryId);
 
     public ActionsDateFilter GetActionsMonthOfCategory(Guid categoryId, int year)
     {

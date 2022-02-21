@@ -11,6 +11,7 @@ namespace DailyRoutines.Domain.Interfaces
     {
         FilterUsersDTO GetUsersWithRole(FilterUsersDTO filter);
         FilterRolesDTO GetRoles(FilterRolesDTO filter);
+        FilterRolesDTO GetUserRoles(Guid userId, FilterRolesDTO filter);
 
         EditRoleDTO GetRoleForEdit(Guid roleId);
         Role GetRoleById(Guid roleId);
@@ -24,6 +25,7 @@ namespace DailyRoutines.Domain.Interfaces
         List<UserRole> GetUserRoles(Guid userId);
         void RemoveUserRole(UserRole userRole);
         void AddUserRole(UserRole userRole);
+        UserRole GetUserRole(Guid userId, Guid roleId);
 
         #endregion
 

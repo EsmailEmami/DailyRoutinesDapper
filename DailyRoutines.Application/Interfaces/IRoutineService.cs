@@ -20,6 +20,7 @@ public interface IRoutineService
     ResultTypes DeleteCategory(Guid categoryId);
     ResultTypes EditCategory(UserCategory category);
     UserCategory GetCategoryById(Guid categoryId);
+    Guid GetUserIdOfCategory(Guid categoryId);
 
     ResultTypes AddAction(Action action);
     ResultTypes EditAction(Action action);
@@ -34,6 +35,7 @@ public interface IRoutineService
     bool IsUserActionExist(Guid userId, Guid actionId);
 
     CategoryDetailDTO GetCategoryDetail(Guid categoryId);
+    CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId);
 
     ActionsDateFilter GetActionsMonthOfCategory(Guid categoryId, int year);
 

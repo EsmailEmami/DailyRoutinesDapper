@@ -6,7 +6,6 @@ namespace DailyRoutines.Domain.DTOs.Routine;
 
 public class AddActionDTO
 {
-
     [Required]
     public Guid UserCategoryId { get; set; }
 

@@ -12,6 +12,7 @@ public interface IAccessService
 {
     FilterUsersDTO GetUsersWithRole(FilterUsersDTO filter);
     FilterRolesDTO GetRoles(FilterRolesDTO filter);
+    FilterRolesDTO GetUserRoles(Guid userId, FilterRolesDTO filter);
 
     EditRoleDTO GetRoleForEdit(Guid roleId);
     Role GetRoleById(Guid roleId);
@@ -23,4 +24,5 @@ public interface IAccessService
 
     ResultTypes RemoveAllUserRoles(Guid userId);
     ResultTypes AddUserRole(Guid userId, List<Guid> roles);
+    ResultTypes DeleteUserRole(Guid userId, Guid roleId);
 }

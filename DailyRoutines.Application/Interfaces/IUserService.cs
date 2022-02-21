@@ -11,6 +11,7 @@ public interface IUserService
     ResultTypes EditUser(User user);
 
     bool IsUserExist(string email, string password);
+    bool IsUserExist(Guid userId);
     User GetUserByEmail(string email);
     User GetUserById(Guid userId);
     bool IsUserPhoneNumberExists(string phoneNumber);
@@ -18,6 +19,8 @@ public interface IUserService
 
     FilterUsersDTO GetUsers(FilterUsersDTO filter);
     EditUserDTO GetUserForEdit(Guid userId);
+
+    UserInformationDTO GetUserInformation(Guid userId);
 
     UserDashboardDTO GetUserDashboard(Guid userId);
 }
