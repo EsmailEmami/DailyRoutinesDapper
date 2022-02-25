@@ -2,7 +2,6 @@
 using DailyRoutines.Application.Extensions;
 using DailyRoutines.Application.Interfaces;
 using DailyRoutines.Application.Security;
-using DailyRoutines.Domain.DTOs.Routine;
 using DailyRoutines.Domain.DTOs.User;
 using DailyRoutines.Domain.Entities.User;
 using DailyRoutines.Domain.Enums;
@@ -156,12 +155,4 @@ public class AccountController : SiteBaseController
     }
 
     #endregion
-
-    [HttpGet("[action]")]
-    public IActionResult Test([FromQuery] Guid userId, [FromQuery] Guid categoryId, [FromQuery] int year)
-    {
-        var b = _routineService.GetActionsMonthOfCategory(categoryId, year);
-
-        return null;
-    }
 }

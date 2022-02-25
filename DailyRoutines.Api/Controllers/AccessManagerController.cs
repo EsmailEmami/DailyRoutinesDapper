@@ -119,7 +119,6 @@ public class AccessManagerController : SiteBaseController
 
     #endregion
 
-
     #region User Roles
 
     [HttpGet("[action]")]
@@ -155,6 +154,18 @@ public class AccessManagerController : SiteBaseController
 
         return JsonResponseStatus.Success();
 
+    }
+
+    #endregion
+
+    #region Role Checker
+
+    [HttpPost("[action]")]
+    public IActionResult RoleCheck([FromBody] List<string> roles)
+    {
+        var result = _accessService.RoleCheck(User.GetUserId(), roles);
+
+        return result ? JsonResponseStatus.Success() : JsonResponseStatus.Error();
     }
 
     #endregion

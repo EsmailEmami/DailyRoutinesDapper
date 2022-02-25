@@ -141,6 +141,9 @@ public class AccessRepository : IAccessRepository
     public List<ItemsForSelectDTO> GetRolesForSelect() =>
         _context.Roles.Select(c => new ItemsForSelectDTO(c.Id, c.RoleName)).ToList();
 
+    public Guid GetRoleIdByName(string roleName) =>
+        _context.Roles.SingleOrDefault(c => c.RoleName == roleName)!.Id;
+
     public List<UserRole> GetUserRoles(Guid userId) =>
         _context.UserRoles.Where(c => c.UserId == userId).ToList();
 
@@ -153,6 +156,10 @@ public class AccessRepository : IAccessRepository
     public UserRole GetUserRole(Guid userId, Guid roleId) =>
         _context.UserRoles.IgnoreQueryFilters()
             .SingleOrDefault(c => c.UserId == userId && c.RoleId == roleId);
+
+    public List<Guid> GetRolesIdOfUser(Guid userId) =>
+        _context.UserRoles.Where(c => c.UserId == userId)
+            .Select(c => c.RoleId).ToList();
 
     public void SaveChanges() =>
         _context.SaveChanges();

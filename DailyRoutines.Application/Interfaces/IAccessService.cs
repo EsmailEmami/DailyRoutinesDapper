@@ -25,4 +25,6 @@ public interface IAccessService
     ResultTypes RemoveAllUserRoles(Guid userId);
     ResultTypes AddUserRole(Guid userId, List<Guid> roles);
     ResultTypes DeleteUserRole(Guid userId, Guid roleId);
+
+    bool RoleCheck(Guid userId, List<string> roles);
 }

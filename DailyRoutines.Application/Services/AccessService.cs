@@ -7,6 +7,7 @@ using DailyRoutines.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DailyRoutines.Application.Extensions;
 using DailyRoutines.Domain.DTOs.Common;
 
 namespace DailyRoutines.Application.Services;
@@ -139,6 +140,38 @@ public class AccessService : IAccessService
         catch
         {
             return ResultTypes.Failed;
+        }
+    }
+
+    public bool RoleCheck(Guid userId, List<string> roles)
+    {
+        try
+        {
+            var userRoles = _role.GetRolesIdOfUser(userId);
+
+            if (!userRoles.Any())
+                return false;
+
+            List<Guid> rolesId = new List<Guid>();
+
+
+            foreach (var role in roles)
+            {
+                var roleId = _role.GetRoleIdByName(role.Fixed());
+
+                if (roleId.IsEmpty())
+                    continue;
+
+
+                rolesId.Add(roleId);
+            }
+
+
+            return rolesId.Any(c => userRoles.Contains(c));
+        }
+        catch
+        {
+            return false;
         }
     }
 }

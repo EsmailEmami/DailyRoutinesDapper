@@ -18,6 +18,7 @@ namespace DailyRoutines.Domain.Interfaces
         void AddRole(Role role);
         void UpdateRole(Role role);
         List<ItemsForSelectDTO> GetRolesForSelect();
+        Guid GetRoleIdByName(string roleName);
 
 
         #region user role
@@ -26,6 +27,9 @@ namespace DailyRoutines.Domain.Interfaces
         void RemoveUserRole(UserRole userRole);
         void AddUserRole(UserRole userRole);
         UserRole GetUserRole(Guid userId, Guid roleId);
+
+        List<Guid> GetRolesIdOfUser(Guid userId);
+
 
         #endregion
 
