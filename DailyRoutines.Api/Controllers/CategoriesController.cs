@@ -185,8 +185,7 @@ public class CategoriesController : SiteBaseController
     [HttpGet("[action]")]
     public IActionResult UserRecycleCategories([FromQuery] FilterCategoriesDTO filter)
     {
-        if (filter.UserId.IsEmpty())
-            filter.UserId = User.GetUserId();
+        filter.UserId = User.GetUserId();
 
 
         var categories = _routineService.GetRecycleCategories(filter);

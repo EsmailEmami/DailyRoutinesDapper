@@ -161,6 +161,13 @@ public class RoutineService : IRoutineService
             if (category == null)
                 return ResultTypes.Failed;
 
+            var categoryActions = _routine.GetActionsOfCategory(category.Id);
+
+            foreach (var action in categoryActions)
+            {
+                _routine.RemoveAction(action);
+            }
+
             _routine.RemoveCategory(category);
 
             _routine.SaveChanges();

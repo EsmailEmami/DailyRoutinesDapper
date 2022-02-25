@@ -267,8 +267,13 @@ public class RoutinesRepository : IRoutineRepository
                 c.Id,
                 c.CategoryTitle,
                 c.LastUpdateDate.ToPersianDateTime(),
+                c.IsDelete,
                 c.Actions.Count))
             .SingleOrDefault();
+
+    public List<Action> GetActionsOfCategory(Guid categoryId) =>
+        _context.Actions.Where(c => c.UserCategoryId == categoryId)
+            .IgnoreQueryFilters().ToList();
 
     public void SaveChanges() => _context.SaveChanges();
 }

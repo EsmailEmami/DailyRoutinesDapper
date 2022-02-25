@@ -179,6 +179,22 @@ public class CategoriesManagerController : SiteBaseController
 
     #endregion
 
+    #region Recycle User Categories
+
+    [HttpGet("[action]")]
+    public IActionResult UserRecycleCategories([FromQuery] FilterCategoriesDTO filter)
+    {
+        if (filter.UserId.IsEmpty())
+            return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
+
+
+        var categories = _routineService.GetRecycleCategories(filter);
+
+        return categories == null ? JsonResponseStatus.NotFound() : JsonResponseStatus.Success(categories);
+    }
+
+    #endregion
+
     #region Category Detail
 
     [HttpGet("[action]")]
@@ -197,7 +213,6 @@ public class CategoriesManagerController : SiteBaseController
 
     #endregion
 
-
     #region Get Category Actions Year
 
     [HttpGet("[action]")]
@@ -213,7 +228,6 @@ public class CategoriesManagerController : SiteBaseController
     }
 
     #endregion
-
 
     #region Categories For Select
 

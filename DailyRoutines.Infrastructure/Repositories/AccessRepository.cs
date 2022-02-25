@@ -145,7 +145,9 @@ public class AccessRepository : IAccessRepository
         _context.Roles.SingleOrDefault(c => c.RoleName == roleName)!.Id;
 
     public List<UserRole> GetUserRoles(Guid userId) =>
-        _context.UserRoles.Where(c => c.UserId == userId).ToList();
+        _context.UserRoles.Where(c => c.UserId == userId)
+            .IgnoreQueryFilters()
+            .ToList();
 
     public void RemoveUserRole(UserRole userRole) =>
         _context.UserRoles.Remove(userRole);

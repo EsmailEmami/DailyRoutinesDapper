@@ -50,6 +50,8 @@ namespace DailyRoutines.Domain.Interfaces
         CategoryDetailDTO GetCategoryDetail(Guid categoryId);
         CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId);
 
+        List<Action> GetActionsOfCategory(Guid categoryId);
+
         void SaveChanges();
     }
 }
