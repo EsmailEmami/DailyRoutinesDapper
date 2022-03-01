@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "muLG2Ev3DLwsRLMKPrd92NQW+bM+tguVMQW+OJLNswsS9A/0RYBSN4ejF98Ga/LaOd9/em7qZPEsurzBphgrEw==",
+  "dgSpecHash": "lHUtpuakwP7E/hFsDMk339BKw77C0mp7+d4d40/FiWDRVUe+E4mzbxf1tTYaI6hegkP65sjPcRlvdgRMKmq3Ow==",
   "success": true,
   "projectFilePath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\esmai\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512"
+  ],
   "logs": []
 }
