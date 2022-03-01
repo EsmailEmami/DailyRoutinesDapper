@@ -8,13 +8,13 @@ build_property.PlatformNeutralAssembly =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = DailyRoutines.Api
 build_property.RootNamespace = DailyRoutines.Api
-build_property.ProjectDir = C:\Projects\DailyRoutines\DailyRoutines.Api\
+build_property.ProjectDir = C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Projects\DailyRoutines\DailyRoutines.Api
+build_property.MSBuildProjectDirectory = C:\Projects\DailyRoutinesDapper\DailyRoutines.Api
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Projects/DailyRoutines/DailyRoutines.Api/Views/Email/ActivateAccount.cshtml]
+[C:/Projects/DailyRoutinesDapper/DailyRoutines.Api/Views/Email/ActivateAccount.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1haWxcQWN0aXZhdGVBY2NvdW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

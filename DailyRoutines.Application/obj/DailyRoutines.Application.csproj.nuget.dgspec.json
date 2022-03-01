@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\DailyRoutines\\DailyRoutines.Application\\DailyRoutines.Application.csproj": {}
+    "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Application\\DailyRoutines.Application.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\DailyRoutines\\DailyRoutines.Application\\DailyRoutines.Application.csproj": {
+    "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Application\\DailyRoutines.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\DailyRoutines\\DailyRoutines.Application\\DailyRoutines.Application.csproj",
+        "projectUniqueName": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Application\\DailyRoutines.Application.csproj",
         "projectName": "DailyRoutines.Application",
-        "projectPath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Application\\DailyRoutines.Application.csproj",
+        "projectPath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Application\\DailyRoutines.Application.csproj",
         "packagesPath": "C:\\Users\\esmai\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Application\\obj\\",
+        "outputPath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\esmai\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Projects\\DailyRoutines\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj": {
-                "projectPath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj"
+              "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj": {
+                "projectPath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj"
               }
             }
           }
@@ -68,14 +68,14 @@
         }
       }
     },
-    "C:\\Projects\\DailyRoutines\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj": {
+    "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\DailyRoutines\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj",
+        "projectUniqueName": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj",
         "projectName": "DailyRoutines.Domain",
-        "projectPath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj",
+        "projectPath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Domain\\DailyRoutines.Domain.csproj",
         "packagesPath": "C:\\Users\\esmai\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Domain\\obj\\",
+        "outputPath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\esmai\\AppData\\Roaming\\NuGet\\NuGet.Config",

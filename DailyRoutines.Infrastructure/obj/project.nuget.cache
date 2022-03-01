@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Gulbdh5u8GQpprdMiBZddfKQgUkuxaJ+nm+D+gY4aWlv75X+0xCzGMA8BVLb3OmCocArMzcH80cHAAZPCMPQaA==",
+  "dgSpecHash": "/6li6t3TfGGPPMJFEt5pu/JtJxdW4vvW1DYC89qZcInN1q5n1jhEhIdnDV6RImzc7yypVkBldFZBGRQMRwB6KA==",
   "success": true,
-  "projectFilePath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Infrastructure\\DailyRoutines.Infrastructure.csproj",
+  "projectFilePath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Infrastructure\\DailyRoutines.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\esmai\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",
     "C:\\Users\\esmai\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",

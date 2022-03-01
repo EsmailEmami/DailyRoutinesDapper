@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HR+2bCY8umm3uclRlSw8BDjD8PN3KIU2QzNyohpTtbbkbE3cIqVp4ZY4R5+hPNYI897y1/FUnWK2QFXxB53agA==",
+  "dgSpecHash": "DfebIsyKmN6sDq6QJKhIBGZwwcQ2As1HYBQHOVnJfM0gOMWNC8G/Ux+BEafWJTa15kWvelUcn6yZUrnLhbbK7w==",
   "success": true,
-  "projectFilePath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Api\\DailyRoutines.Api.csproj",
+  "projectFilePath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Api\\DailyRoutines.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\esmai\\.nuget\\packages\\advancedstringbuilder\\0.1.0\\advancedstringbuilder.0.1.0.nupkg.sha512",
     "C:\\Users\\esmai\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",

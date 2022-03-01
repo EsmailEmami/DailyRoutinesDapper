@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gmhEmIk4wwosa9P2OY6u0YqlKOK93zfOS6l74wPuduWf8cvFWydIJZ6jzvT4v5kK4u9Kb03Yya0Ku3Zq0joORw==",
+  "dgSpecHash": "Xv6gY06PmhDD90/ye4cuGFTCSUlT3XG4AQLQe8SbV6uC9jwILD9yJ2zh44kxkUPGtS6wAr1SyZlJRsU90iKLRA==",
   "success": true,
-  "projectFilePath": "C:\\Projects\\DailyRoutines\\DailyRoutines.Application\\DailyRoutines.Application.csproj",
+  "projectFilePath": "C:\\Projects\\DailyRoutinesDapper\\DailyRoutines.Application\\DailyRoutines.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\esmai\\.nuget\\packages\\microsoft.aspnetcore.antiforgery\\2.2.0\\microsoft.aspnetcore.antiforgery.2.2.0.nupkg.sha512",
     "C:\\Users\\esmai\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
