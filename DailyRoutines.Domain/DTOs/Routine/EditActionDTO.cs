@@ -5,14 +5,6 @@ namespace DailyRoutines.Domain.DTOs.Routine;
 
 public class EditActionDTO
 {
-    public EditActionDTO(Guid actionId, string actionTitle, string actionDescription)
-    {
-        ActionId = actionId;
-        ActionTitle = actionTitle;
-        ActionDescription = actionDescription;
-    }
-
-
     [Required]
     public Guid ActionId { get; set; }
 

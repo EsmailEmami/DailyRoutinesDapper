@@ -45,11 +45,11 @@ public static class DateConvertor
         return pc.GetDayOfMonth(value);
     }
 
-    public static DateTime ToGeorgianDate(this string dateTime,string spliter)
+    public static DateTime ToGeorgianDate(this string dateTime,string splitter)
     {
         string englishDateTime = dateTime.PersianNumberToLatinNumber();
         
-        string[] date = dateTime.Split(spliter);
+        string[] date = dateTime.Split(splitter);
 
         return new DateTime(int.Parse(date[0]),
             int.Parse(date[1]),

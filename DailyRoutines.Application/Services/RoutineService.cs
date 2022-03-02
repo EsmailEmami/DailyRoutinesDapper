@@ -6,6 +6,7 @@ using DailyRoutines.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DailyRoutines.Application.Extensions;
 using DailyRoutines.Domain.DTOs.Common;
 using DailyRoutines.Domain.Entities.Routine;
 using Action = DailyRoutines.Domain.Entities.Routine.Action;
@@ -39,7 +40,6 @@ public class RoutineService : IRoutineService
         try
         {
             _routine.UpdateCategory(category);
-            _routine.SaveChanges();
 
             return ResultTypes.Successful;
         }
@@ -61,17 +61,16 @@ public class RoutineService : IRoutineService
         {
             _routine.AddAction(action);
 
-            var category = _routine.GetCategoryById(action.UserCategoryId);
+            var category = _routine.GetCategoryById(action.CategoryId);
 
-            if (category != null)
-            {
-                category.LastUpdateDate = DateTime.Now;
-
-                _routine.UpdateCategory(category);
-            }
+            if (category == null) 
+                return ResultTypes.Failed;
 
 
-            _routine.SaveChanges();
+            category.LastUpdateDate = DateTime.Now;
+
+            _routine.UpdateCategory(category);
+
 
             return ResultTypes.Successful;
         }
@@ -87,7 +86,7 @@ public class RoutineService : IRoutineService
         {
             _routine.UpdateAction(action);
 
-            var category = _routine.GetCategoryById(action.UserCategoryId);
+            var category = _routine.GetCategoryById(action.CategoryId);
 
             if (category != null)
             {
@@ -95,8 +94,6 @@ public class RoutineService : IRoutineService
 
                 _routine.UpdateCategory(category);
             }
-
-            _routine.SaveChanges();
 
             return ResultTypes.Successful;
         }
@@ -110,7 +107,7 @@ public class RoutineService : IRoutineService
     {
         try
         {
-            var category = _routine.GetCategoryById(action.UserCategoryId);
+            var category = _routine.GetCategoryById(action.CategoryId);
 
             if (category != null)
             {
@@ -119,9 +116,7 @@ public class RoutineService : IRoutineService
                 _routine.UpdateCategory(category);
             }
 
-            _routine.RemoveAction(action);
-
-            _routine.SaveChanges();
+            _routine.DeleteAction(action.ActionId);
 
             return ResultTypes.Successful;
         }
@@ -142,7 +137,6 @@ public class RoutineService : IRoutineService
         try
         {
             _routine.AddCategory(category);
-            _routine.SaveChanges();
 
             return ResultTypes.Successful;
         }
@@ -156,21 +150,10 @@ public class RoutineService : IRoutineService
     {
         try
         {
-            var category = _routine.GetCategoryById(categoryId);
-
-            if (category == null)
+            if (!_routine.IsCategoryExist(categoryId))
                 return ResultTypes.Failed;
 
-            var categoryActions = _routine.GetActionsOfCategory(category.Id);
-
-            foreach (var action in categoryActions)
-            {
-                _routine.RemoveAction(action);
-            }
-
-            _routine.RemoveCategory(category);
-
-            _routine.SaveChanges();
+            _routine.DeleteCategory(categoryId);
 
             return ResultTypes.Successful;
         }
@@ -192,8 +175,10 @@ public class RoutineService : IRoutineService
     public bool IsUserActionExist(Guid userId, Guid actionId) =>
         _routine.IsUserActionExist(userId, actionId);
 
-    public CategoryDetailDTO GetCategoryDetail(Guid categoryId) =>
-        _routine.GetCategoryDetail(categoryId);
+    public CategoryDetailDTO GetCategoryDetail(Guid categoryId)
+    {
+        return categoryId.IsEmpty() ? null : _routine.GetCategoryDetail(categoryId);
+    }
 
     public CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId) =>
         _routine.GetCategoryDetailForAdmin(categoryId);

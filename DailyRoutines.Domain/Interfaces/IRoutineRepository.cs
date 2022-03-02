@@ -11,13 +11,13 @@ namespace DailyRoutines.Domain.Interfaces
     {
         #region category
 
-        FilterCategoriesDTO GetUserCategories(FilterCategoriesDTO filter);
-        FilterCategoriesDTO GetUserRecycleCategories(FilterCategoriesDTO filter);
+        List<CategoriesListDTO> GetUserCategories(Guid userId, int skip, int take, string orderBy, string filter);
+        List<CategoriesListDTO> GetUserRecycleCategories(Guid userId, int skip, int take, string orderBy, string filter);
         EditCategoryDTO GetCategoryForEdit(Guid categoryId);
 
         Category GetCategoryById(Guid categoryId);
-        void RemoveCategory(Category category);
-        void AddCategory(Category category);
+        void DeleteCategory(Guid categoryId);
+        Category AddCategory(Category category);
         void UpdateCategory(Category category);
 
         List<ItemsForSelectDTO> GetUserCategoriesForSelect(Guid userId);
@@ -38,12 +38,13 @@ namespace DailyRoutines.Domain.Interfaces
 
         ActionDetailDTO GetActionDetail(Guid actionId);
         EditActionDTO GetActionForEdit(Guid actionId);
-        void AddAction(Action action);
+        Action AddAction(Action action);
         void UpdateAction(Action action);
-        void RemoveAction(Action action);
+        void DeleteAction(Guid actionId);
 
         Action GetActionById(Guid actionId);
 
+        bool IsCategoryExist(Guid categoryId);
         bool IsUserCategoryExist(Guid userId, Guid categoryId);
         bool IsUserActionExist(Guid userId, Guid actionId);
 
@@ -51,7 +52,5 @@ namespace DailyRoutines.Domain.Interfaces
         CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId);
 
         List<Action> GetActionsOfCategory(Guid categoryId);
-
-        void SaveChanges();
     }
 }

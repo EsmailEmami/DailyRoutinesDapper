@@ -5,12 +5,6 @@ namespace DailyRoutines.Domain.DTOs.Routine;
 
 public class EditCategoryDTO
 {
-    public EditCategoryDTO(Guid categoryId, string categoryTitle)
-    {
-        CategoryId = categoryId;
-        CategoryTitle = categoryTitle;
-    }
-
     [Required]
     public Guid CategoryId { get; set; }
 

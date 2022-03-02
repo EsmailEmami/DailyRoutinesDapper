@@ -118,7 +118,7 @@ public class AccountController : SiteBaseController
             {
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
             },
             expires: DateTime.Now.AddDays(30),
             signingCredentials: signinCredentials
@@ -127,7 +127,7 @@ public class AccountController : SiteBaseController
         var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
         return JsonResponseStatus.Success(new LoginUser(
-            user.Id,
+            user.UserId,
             user.FirstName,
             user.LastName,
             30,
@@ -152,7 +152,7 @@ public class AccountController : SiteBaseController
 
         return JsonResponseStatus.Success(new
         {
-            userId = user.Id,
+            userId = user.UserId,
             firstName = user.FirstName,
             lastName = user.LastName,
             email = user.Email,

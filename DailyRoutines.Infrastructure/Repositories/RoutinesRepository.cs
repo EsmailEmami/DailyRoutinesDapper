@@ -1,111 +1,155 @@
 ﻿using DailyRoutines.Application.Convertors;
 using DailyRoutines.Application.Extensions;
 using DailyRoutines.Application.Generator;
+using DailyRoutines.Domain.DTOs.Common;
 using DailyRoutines.Domain.DTOs.Routine;
 using DailyRoutines.Domain.Entities.Routine;
 using DailyRoutines.Domain.Interfaces;
 using DailyRoutines.Infrastructure.Context;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using DailyRoutines.Domain.DTOs.Common;
-using Microsoft.EntityFrameworkCore;
 using Action = DailyRoutines.Domain.Entities.Routine.Action;
 
 namespace DailyRoutines.Infrastructure.Repositories;
 
 public class RoutinesRepository : IRoutineRepository
 {
-    private readonly DailyRoutinesDbContext _context;
+    private readonly IDbConnection _db;
 
-    public RoutinesRepository(DailyRoutinesDbContext context)
+    public RoutinesRepository(IConfiguration configuration)
     {
-        _context = context;
+        _db = new SqlConnection(configuration.GetConnectionString("DailyRoutinesDbConnection"));
     }
 
-
-    public FilterCategoriesDTO GetUserCategories(FilterCategoriesDTO filter)
+    public List<CategoriesListDTO> GetUserCategories(Guid userId, int skip, int take, string orderBy, string filter)
     {
-        IQueryable<Category> categoriesQuery = _context.UserCategories
-            .Where(c => c.UserId == filter.UserId);
+        var parameters = new DynamicParameters();
+        parameters.Add("@UserId", userId);
+        parameters.Add("@Skip", skip);
+        parameters.Add("@Take", take);
+        parameters.Add("@Search", filter);
+        parameters.Add("@OrderBy", orderBy);
 
-        if (!string.IsNullOrEmpty(filter.Search))
-            categoriesQuery = categoriesQuery.Where(c => c.CategoryTitle.Contains(filter.Search));
+        return _db.Query<CategoriesListDTO>("[User].[uspGetUserCategories]", parameters,
+            commandType: CommandType.StoredProcedure).ToList();
+    }
 
-        categoriesQuery = filter.OrderBy.Fixed() switch
+    public List<CategoriesListDTO> GetUserRecycleCategories(Guid userId, int skip, int take, string orderBy, string filter)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("@UserId", userId);
+        parameters.Add("@Skip", skip);
+        parameters.Add("@Take", take);
+        parameters.Add("@Search", filter);
+        parameters.Add("@OrderBy", orderBy);
+
+        return _db.Query<CategoriesListDTO>("[User].[uspGetUserRecycleCategories]", parameters,
+            commandType: CommandType.StoredProcedure).ToList();
+    }
+
+    public EditCategoryDTO GetCategoryForEdit(Guid categoryId)
+    {
+        string query = "SELECT [CategoryId],[CategoryTitle] " +
+                       "FROM [User].[Categories] " +
+                       "WHERE [CategoryId] = @CategoryId;";
+
+        return _db.QuerySingleOrDefault<EditCategoryDTO>(query, new
         {
-            "createdate" => categoriesQuery.OrderByDescending(c => c.CreateDate),
-            "updatedate" => categoriesQuery.OrderByDescending(c => c.LastUpdateDate),
-            _ => categoriesQuery
-        };
-
-        int pagesCount = (int)Math.Ceiling(categoriesQuery.Count() / (double)filter.TakeEntity);
-
-        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
-
-
-
-        var categories = categoriesQuery
-            .Select(c => new CategoriesListDTO(c.Id, c.CategoryTitle, c.LastUpdateDate.ToPersianDateTime()))
-            .Paging(pager).ToList();
-
-        return filter.SetItems(categories)
-            .SetPaging(pager);
+            categoryId
+        });
     }
 
-    public FilterCategoriesDTO GetUserRecycleCategories(FilterCategoriesDTO filter)
+    public Category GetCategoryById(Guid categoryId)
     {
-        IQueryable<Category> categoriesQuery = _context.UserCategories
-            .Where(c => c.UserId == filter.UserId && c.IsDelete == true)
-            .IgnoreQueryFilters();
+        string query = "SELECT [CategoryId],[CategoryTitle],[UserId],[CreateDate],[LastUpdateDate],[IsDelete] " +
+                       "FROM [User].[Categories] " +
+                       "WHERE [CategoryId] = @CategoryId;";
 
-        if (!string.IsNullOrEmpty(filter.Search))
-            categoriesQuery = categoriesQuery.Where(c => c.CategoryTitle.Contains(filter.Search));
-
-        categoriesQuery = filter.OrderBy.Fixed() switch
+        return _db.QuerySingleOrDefault<Category>(query, new
         {
-            "createdate" => categoriesQuery.OrderByDescending(c => c.CreateDate),
-            "updatedate" => categoriesQuery.OrderByDescending(c => c.LastUpdateDate),
-            _ => categoriesQuery
-        };
-
-        int pagesCount = (int)Math.Ceiling(categoriesQuery.Count() / (double)filter.TakeEntity);
-
-        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
-
-        var categories = categoriesQuery
-            .Select(c => new CategoriesListDTO(c.Id, c.CategoryTitle, c.LastUpdateDate.ToPersianDateTime()))
-            .Paging(pager).ToList();
-
-        return filter.SetItems(categories)
-            .SetPaging(pager);
+            categoryId
+        });
     }
 
-    public EditCategoryDTO GetCategoryForEdit(Guid categoryId) =>
-        _context.UserCategories.Where(c => c.Id == categoryId)
-            .Select(c => new EditCategoryDTO(c.Id, c.CategoryTitle))
-            .SingleOrDefault();
+    public void DeleteCategory(Guid categoryId)
+    {
+        string query = "DELETE FROM [User].[Categories] " +
+                       "WHERE [CategoryId] = @CategoryId;";
 
-    public Category GetCategoryById(Guid categoryId) =>
-        _context.UserCategories.IgnoreQueryFilters()
-            .SingleOrDefault(c => c.Id == categoryId);
+        _db.Execute(query, new
+        {
+            categoryId
+        });
+    }
 
-    public void RemoveCategory(Category category) =>
-        _context.UserCategories.Remove(category);
+    public Category AddCategory(Category category)
+    {
+        string query = "INSERT INTO [User].[Categories] ([CategoryTitle],[UserId],[IsDelete],[CreateDate],[LastUpdateDate]) " +
+                       "OUTPUT CAST([Inserted].[CategoryId] AS UNIQUEIDENTIFIER) AS [CategoryId]" +
+                       "VALUES (@CategoryTitle,@UserId,@IsDelete,@CreateDate,@LastUpdateDate)";
 
-    public void AddCategory(Category category) =>
-        _context.UserCategories.Add(category);
 
-    public void UpdateCategory(Category category) =>
-        _context.UserCategories.Update(category);
+        var categoryId = _db.QuerySingle<Guid>(query, new
+        {
+            category.CategoryTitle,
+            category.UserId,
+            category.IsDelete,
+            category.CreateDate,
+            category.LastUpdateDate
+        });
 
-    public List<ItemsForSelectDTO> GetUserCategoriesForSelect(Guid userId) =>
-        _context.UserCategories.Where(c => c.UserId == userId)
-            .Select(c => new ItemsForSelectDTO(c.Id, c.CategoryTitle))
-            .ToList();
+        category.CategoryId = categoryId;
 
-    public Guid GetUserIdOfCategory(Guid categoryId) =>
-        _context.UserCategories.SingleOrDefault(c => c.Id == categoryId)!.UserId;
+        return category;
+    }
+
+    public void UpdateCategory(Category category)
+    {
+        string query =
+            "UPDATE [User].[Categories] SET" +
+            "[CategoryTitle] = @CategoryTitle, " +
+            "[LastUpdateDate] = @LastUpdateDate, " +
+            "WHERE [CategoryId] = @CategoryId;";
+
+        _db.Execute(query, new
+        {
+            category.CategoryTitle,
+            category.LastUpdateDate,
+            category.CategoryId
+        });
+    }
+
+    public List<ItemsForSelectDTO> GetUserCategoriesForSelect(Guid userId)
+    {
+        string query =
+            "SELECT [CategoryId] AS [Value], [CategoryTitle] AS [Name] " +
+            "FROM [User].[Categories] " +
+            "WHERE [UserId] = @UserId";
+
+        return _db.Query<ItemsForSelectDTO>(query, new
+        {
+            userId
+        }).ToList();
+    }
+
+    public Guid GetUserIdOfCategory(Guid categoryId)
+    {
+        string query =
+            "SELECT [UserId] " +
+            "FROM [User].[Categories] " +
+            "WHERE [CategoryId] = @CategoryId";
+
+        return _db.QuerySingleOrDefault<Guid>(query, new
+        {
+            categoryId
+        });
+    }
 
     public FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter)
     {
@@ -198,82 +242,266 @@ public class RoutinesRepository : IRoutineRepository
             .SetPaging(pager);
     }
 
-    public List<DatesOfCategoryActionsDTO> GetActionsMonthOfCategory(Guid categoryId, int year) =>
-        _context.Actions.Where(c => c.UserCategoryId == categoryId &&
-                                    c.CreatePersianYear == year)
-            .GroupBy(c => c.CreatePersianMonth)
-            .Select(c => new DatesOfCategoryActionsDTO(c.Key, c.Count()))
-            .ToList();
+    public List<DatesOfCategoryActionsDTO> GetActionsMonthOfCategory(Guid categoryId, int year)
+    {
+        string query =
+            "SELECT [CreatePersianMonth] AS [Value],COUNT(*) AS [ActionsCount] " +
+            "FROM [User].[Actions] " +
+            "WHERE ([CategoryId] = @CategoryId) AND ([CreatePersianYear] = @Year)" +
+            "GROUP BY [CreatePersianMonth];";
 
-    public List<int> GetYearsOfCategoryActions(Guid categoryId) =>
-        _context.Actions.Where(c => c.UserCategoryId == categoryId)
-            .GroupBy(c => c.CreatePersianYear)
-            .Select(c => c.Key)
-            .ToList();
+        return _db.Query<DatesOfCategoryActionsDTO>(query, new
+        {
+            categoryId,
+            year
+        }).ToList();
+    }
 
-    public List<int> GetYearsOfActions(Guid userId) =>
-        _context.Actions.Where(c => c.UserCategory.UserId == userId)
-            .GroupBy(c => c.CreatePersianYear)
-            .Select(c => c.Key)
-            .ToList();
+    public List<int> GetYearsOfCategoryActions(Guid categoryId)
+    {
+        string query =
+            "SELECT DISTINCT [CreatePersianYear] " +
+            "FROM [User].[Actions] " +
+            "WHERE [CategoryId] = @CategoryId;";
+
+        return _db.Query<int>(query, new
+        {
+            categoryId,
+        }).ToList();
+    }
+
+    public List<int> GetYearsOfActions(Guid userId)
+    {
+        string query =
+            "SELECT DISTINCT [CreatePersianYear] " +
+            "FROM [User].[Actions] " +
+            "INNER JOIN [User].[Categories] " +
+            "ON [User].[Actions].[CategoryId] = [User].[Categories].[CategoryId] " +
+            "WHERE [User].[Categories].[UserId] = @UserId;";
+
+        return _db.Query<int>(query, new
+        {
+            userId,
+        }).ToList();
+    }
 
 
-    public ActionDetailDTO GetActionDetail(Guid actionId) =>
-        _context.Actions.Where(c => c.Id == actionId)
-            .Select(c => new ActionDetailDTO(
-                c.Id,
-                c.ActionTitle,
-                c.ActionDescription,
-                c.CreateDate.ToPersianDateTime(),
-                c.LastUpdateDate.ToPersianDateTime()
-                ))
-            .SingleOrDefault();
+    public ActionDetailDTO GetActionDetail(Guid actionId)
+    {
+        string query = "SELECT [ActionId],[ActionTitle],[ActionDescription],[CreateDate],[LastUpdateDate] " +
+                       "FROM[User].[Actions] " +
+                       "WHERE[ActionId] = @ActionId;";
 
-    public EditActionDTO GetActionForEdit(Guid actionId) =>
-        _context.Actions.Where(c => c.Id == actionId)
-            .Select(c => new EditActionDTO(c.Id, c.ActionTitle, c.ActionDescription))
-            .SingleOrDefault();
 
-    public void AddAction(Action action) => _context.Actions.Add(action);
+        return _db.QuerySingleOrDefault<ActionDetailDTO>(query, new
+        {
+            actionId,
+        });
+    }
 
-    public void UpdateAction(Action action) => _context.Actions.Update(action);
+    public EditActionDTO GetActionForEdit(Guid actionId)
+    {
+        string query = "SELECT [ActionId],[ActionTitle],[ActionDescription] " +
+                       "FROM[User].[Actions] " +
+                       "WHERE[ActionId] = @ActionId;";
 
-    public void RemoveAction(Action action) => _context.Actions.Remove(action);
-    public Action GetActionById(Guid actionId) => _context.Actions.Find(actionId);
 
-    public bool IsUserCategoryExist(Guid userId, Guid categoryId) =>
-        _context.UserCategories.IgnoreQueryFilters()
-            .Any(c => c.Id == categoryId && c.UserId == userId);
+        return _db.QuerySingleOrDefault<EditActionDTO>(query, new
+        {
+            actionId,
+        });
+    }
 
-    public bool IsUserActionExist(Guid userId, Guid actionId) =>
-         _context.Actions.Any(c => c.Id == actionId &&
-                                             c.UserCategory.UserId == userId);
+    public Action AddAction(Action action)
+    {
+        string query =
+            "INSERT INTO [User].[Actions] (" +
+            "[CategoryId]," +
+            "[ActionTitle]," +
+            "[ActionDescription]," +
+            "[CreatePersianYear]," +
+            "[CreatePersianMonth]," +
+            "[CreatePersianDay]," +
+            "[CreateDate]," +
+            "[LastUpdateDate])" +
+            "OUTPUT CAST([Inserted].[ActionId] AS UNIQUEIDENTIFIER) AS [ActionId]" +
+            "VALUES (@CategoryId," +
+            "@ActionTitle," +
+            "@ActionDescription," +
+            "@CreatePersianYear," +
+            "@CreatePersianMonth," +
+            "@CreatePersianDay," +
+            "@CreateDate," +
+            "@LastUpdateDate);";
 
-    public CategoryDetailDTO GetCategoryDetail(Guid categoryId) =>
-        _context.UserCategories.Where(c => c.Id == categoryId)
-            .Select(c => new CategoryDetailDTO(
-                c.Id,
-                c.CategoryTitle,
-                c.LastUpdateDate.ToPersianDateTime(),
-                c.Actions.Count))
-            .SingleOrDefault();
 
-    public CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId) =>
-        _context.UserCategories.Where(c => c.Id == categoryId)
-            .IgnoreQueryFilters()
-            .Select(c => new CategoryDetailForAdminDTO(
-                c.UserId,
-                c.User.FullName,
-                c.Id,
-                c.CategoryTitle,
-                c.LastUpdateDate.ToPersianDateTime(),
-                c.IsDelete,
-                c.Actions.Count))
-            .SingleOrDefault();
+        var actionId = _db.QuerySingle<Guid>(query, new
+        {
+            action.CategoryId,
+            action.ActionTitle,
+            action.ActionDescription,
+            action.CreatePersianYear,
+            action.CreatePersianMonth,
+            action.CreatePersianDay,
+            action.CreateDate,
+            action.LastUpdateDate
+        });
 
-    public List<Action> GetActionsOfCategory(Guid categoryId) =>
-        _context.Actions.Where(c => c.UserCategoryId == categoryId)
-            .IgnoreQueryFilters().ToList();
+        action.ActionId = actionId;
 
-    public void SaveChanges() => _context.SaveChanges();
+        return action;
+    }
+
+    public void UpdateAction(Action action)
+    {
+        string query =
+            "UPDATE [User].[Actions] SET" +
+            "[ActionTitle] = @ActionTitle, " +
+            "[ActionDescription] = @ActionDescription, " +
+            "[LastUpdateDate] = @LastUpdateDate " +
+            "WHERE [ActionId] = @ActionId";
+
+
+        _db.Execute(query, new
+        {
+            action.ActionTitle,
+            action.ActionDescription,
+            action.LastUpdateDate,
+            action.ActionId
+        });
+    }
+
+    public void DeleteAction(Guid actionId)
+    {
+        string query = "DELETE FROM [User].[Actions] " +
+                       "WHERE [ActionId] = @ActionId;";
+
+        _db.Execute(query, new
+        {
+            action
+        });
+    }
+
+    public Action GetActionById(Guid actionId)
+    {
+        string query = "SELECT [ActionId],[CategoryId],[ActionTitle],[ActionDescription]," +
+                       "[CreatePersianYear],[CreatePersianMonth],[CreatePersianDay]," +
+                       "[CreateDate],[LastUpdateDate] " +
+                       "FROM[User].[Actions] " +
+                       "WHERE[ActionId] = @ActionId;";
+
+
+        return _db.QuerySingleOrDefault<Action>(query, new
+        {
+            actionId,
+        });
+    }
+
+    public bool IsCategoryExist(Guid categoryId)
+    {
+        string query = "SELECT (CASE WHEN EXISTS(" +
+                       "SELECT NULL " +
+                       "FROM [User].[Categories] " +
+                       "WHERE [CategoryId] = @CategoryId) " +
+                       "THEN 1 ELSE 0 END) AS[Value]";
+
+        return _db.QuerySingleOrDefault<bool>(query, new
+        {
+            categoryId
+        });
+    }
+
+    public bool IsUserCategoryExist(Guid userId, Guid categoryId)
+    {
+        string query = "SELECT (CASE WHEN EXISTS(" +
+                       "SELECT NULL " +
+                       "FROM [User].[Categories] " +
+                       "WHERE ([CategoryId] = @CategoryId) AND ([UserId] = @UserId)) " +
+                       "THEN 1 ELSE 0 END) AS[Value]";
+
+        return _db.QuerySingleOrDefault<bool>(query, new
+        {
+            categoryId,
+            userId
+        });
+    }
+
+    public bool IsUserActionExist(Guid userId, Guid actionId)
+    {
+        string query = "SELECT (CASE WHEN EXISTS(" +
+                       "SELECT NULL " +
+                       "FROM [User].[Actions] " +
+                       "INNER JOIN [User].[Categories]" +
+                       "ON [User].[Actions].[CategoryId] = [User].[Categories].[CategoryId]" +
+                       "WHERE ([User].[Actions].[ActionId] = @ActionId) AND ([User].[Categories].[UserId] = @UserId)) " +
+                       "THEN 1 ELSE 0 END) AS[Value]";
+
+        return _db.QuerySingleOrDefault<bool>(query, new
+        {
+            actionId,
+            userId
+        });
+    }
+
+    public CategoryDetailDTO GetCategoryDetail(Guid categoryId)
+    {
+        string query = "SELECT " +
+                       "[Categories].[CategoryId], " +
+                       "[Categories].[CategoryTitle], " +
+                       "dbo.PersianDateTime([Categories].[LastUpdateDate]) AS [LastUpdate], " +
+                       "COUNT([User].[Actions].[ActionId]) AS [ActionsCount] " +
+                       "FROM [User].[Categories] " +
+                       "LEFT OUTER JOIN [User].[Actions] " +
+                       "ON [User].[Categories].[CategoryId] = [User].[Actions].[CategoryId] " +
+                       "WHERE [User].[Categories].[CategoryId] = @CategoryId;";
+
+
+        return _db.QuerySingleOrDefault<CategoryDetailDTO>(query, new
+        {
+            categoryId
+        });
+    }
+
+    public CategoryDetailForAdminDTO GetCategoryDetailForAdmin(Guid categoryId)
+    {
+        string query = "SELECT [Users].[UserId], " +
+                       "CONCAT([Users].[FirstName], ' ', [Users].[LastName]) AS [FullName], " +
+                       "[Categories].[CategoryId], " +
+                       "[Categories].[CategoryTitle], " +
+                       "dbo.PersianDateTime([Categories].[LastUpdateDate]) AS [LastUpdate], " +
+                       "[Categories].[IsDelete], " +
+                       "COUNT([Actions].[ActionId]) AS [ActionsCount] " +
+                       "FROM [User].[Categories] " +
+                       "INNER JOIN [User].[Users] " +
+                       "ON [User].[Categories].[UserId] = [User].[Users].[UserId] " +
+                       "INNER JOIN [User].[Actions] " +
+                       "ON [User].[Categories].[CategoryId] = [User].[Actions].[CategoryId] " +
+                       "WHERE [User].[Categories].[CategoryId] = @CategoryId;";
+
+
+        return _db.QuerySingleOrDefault<CategoryDetailForAdminDTO>(query, new
+        {
+            categoryId
+        });
+    }
+
+    public List<Action> GetActionsOfCategory(Guid categoryId)
+    {
+        string query = "SELECT [ActionId] " +
+                       ",[CategoryId] " +
+                       ",[ActionTitle] " +
+                       ",[ActionDescription] " +
+                       ",[CreatePersianYear] " +
+                       ",[CreatePersianMonth] " +
+                       ",[CreatePersianDay] " +
+                       ",[CreateDate] " +
+                       ",[LastUpdateDate] " +
+                       "FROM [User].[Actions] " +
+                       "WHERE [CategoryId] = @CategoryId;";
+
+        return _db.Query<Action>(query, new
+        {
+            categoryId
+        }).ToList();
+    }
 }
