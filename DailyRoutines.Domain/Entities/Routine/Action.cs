@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DailyRoutines.Domain.Entities.Common;
 
 namespace DailyRoutines.Domain.Entities.Routine
 {
-    public class Action : BaseEntity
+    public class Action
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid ActionId { get; set; }
+
         [Display(Name = "عنوان فعالیت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -17,8 +19,14 @@ namespace DailyRoutines.Domain.Entities.Routine
         [MaxLength(3000, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ActionDescription { get; set; }
 
-        [ForeignKey("UserCategory")]
-        public Guid UserCategoryId { get; set; }
+        [Required]
+        public DateTime CreateDate { get; set; } = DateTime.Now;
+
+        [Required]
+        public DateTime LastUpdateDate { get; set; } = DateTime.Now;
+
+        [ForeignKey("Category")]
+        public Guid CategoryId { get; set; }
 
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int CreatePersianYear { get; set; }
@@ -31,7 +39,7 @@ namespace DailyRoutines.Domain.Entities.Routine
 
         #region Relations
 
-        public UserCategory UserCategory { get; set; }
+        public Category Category { get; set; }
 
         #endregion
     }

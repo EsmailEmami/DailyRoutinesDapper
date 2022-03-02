@@ -31,7 +31,7 @@ public class CategoriesController : SiteBaseController
         if (!ModelState.IsValid)
             return JsonResponseStatus.Error("اطلاعات وارد شده نادرست است.");
 
-        var category = new UserCategory()
+        var category = new Category()
         {
             CategoryTitle = categoryData.CategoryTitle,
             CreateDate = DateTime.Now,

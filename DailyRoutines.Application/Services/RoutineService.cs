@@ -34,7 +34,7 @@ public class RoutineService : IRoutineService
     public FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter) =>
         _routine.GetLastUserActions(filter);
 
-    public ResultTypes EditCategory(UserCategory category)
+    public ResultTypes EditCategory(Category category)
     {
         try
         {
@@ -49,7 +49,7 @@ public class RoutineService : IRoutineService
         }
     }
 
-    public UserCategory GetCategoryById(Guid categoryId) =>
+    public Category GetCategoryById(Guid categoryId) =>
         _routine.GetCategoryById(categoryId);
 
     public Guid GetUserIdOfCategory(Guid categoryId) =>
@@ -137,7 +137,7 @@ public class RoutineService : IRoutineService
     public EditCategoryDTO GetCategoryForEdit(Guid categoryId) =>
         _routine.GetCategoryForEdit(categoryId);
 
-    public ResultTypes AddCategory(UserCategory category)
+    public ResultTypes AddCategory(Category category)
     {
         try
         {

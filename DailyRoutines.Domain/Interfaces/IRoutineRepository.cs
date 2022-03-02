@@ -15,10 +15,10 @@ namespace DailyRoutines.Domain.Interfaces
         FilterCategoriesDTO GetUserRecycleCategories(FilterCategoriesDTO filter);
         EditCategoryDTO GetCategoryForEdit(Guid categoryId);
 
-        UserCategory GetCategoryById(Guid categoryId);
-        void RemoveCategory(UserCategory category);
-        void AddCategory(UserCategory category);
-        void UpdateCategory(UserCategory category);
+        Category GetCategoryById(Guid categoryId);
+        void RemoveCategory(Category category);
+        void AddCategory(Category category);
+        void UpdateCategory(Category category);
 
         List<ItemsForSelectDTO> GetUserCategoriesForSelect(Guid userId);
 

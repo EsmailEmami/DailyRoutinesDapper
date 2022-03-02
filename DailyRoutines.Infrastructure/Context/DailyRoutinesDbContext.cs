@@ -13,7 +13,7 @@ public class DailyRoutinesDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
-    public DbSet<UserCategory> UserCategories { get; set; }
+    public DbSet<Category> UserCategories { get; set; }
     public DbSet<Action> Actions { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
@@ -24,7 +24,7 @@ public class DailyRoutinesDbContext : DbContext
         modelBuilder.Entity<UserRole>()
             .HasKey(c => new { c.UserId, c.RoleId });
 
-        modelBuilder.Entity<UserCategory>()
+        modelBuilder.Entity<Category>()
             .HasQueryFilter(u => !u.IsDelete);
 
         modelBuilder.Entity<Action>()

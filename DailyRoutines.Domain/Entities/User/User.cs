@@ -1,5 +1,6 @@
-﻿using DailyRoutines.Domain.Entities.Access;
-using DailyRoutines.Domain.Entities.Common;
+﻿using System;
+using DailyRoutines.Domain.Entities.Access;
+using DailyRoutines.Domain.Entities;
 using DailyRoutines.Domain.Entities.Routine;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,8 +8,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DailyRoutines.Domain.Entities.User
 {
-    public class User : BaseEntity
+    public class User 
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid UserId { get; set; }
+
         [Display(Name = "نام")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -36,12 +40,18 @@ namespace DailyRoutines.Domain.Entities.User
         [Required]
         public bool IsBlock { get; set; } = false;
 
+        [Required]
+        public DateTime CreateDate { get; set; } = DateTime.Now;
+
+        [Required]
+        public DateTime LastUpdateDate { get; set; } = DateTime.Now;
+
         [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
 
         #region Relations
 
-        public ICollection<UserCategory> UserCategories { get; set; }
+        public ICollection<Category> UserCategories { get; set; }
         public ICollection<UserRole> UserRoles { get; set; }
 
         #endregion

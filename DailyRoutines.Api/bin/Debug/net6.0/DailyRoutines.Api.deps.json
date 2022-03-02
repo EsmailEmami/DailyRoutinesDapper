@@ -11,6 +11,7 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "11.0.0",
           "DailyRoutines.Application": "1.0.0",
           "DailyRoutines.Infrastructure": "1.0.0",
+          "Dapper": "2.0.123",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "6.0.1",
           "Microsoft.EntityFrameworkCore": "6.0.1",
           "Microsoft.EntityFrameworkCore.Design": "6.0.1",
@@ -3245,6 +3246,7 @@
       "DailyRoutines.Application/1.0.0": {
         "dependencies": {
           "DailyRoutines.Domain": "1.0.0",
+          "Dapper": "2.0.123",
           "Microsoft.AspNetCore.Mvc.RazorPages": "2.2.5"
         },
         "runtime": {
@@ -3252,6 +3254,9 @@
         }
       },
       "DailyRoutines.Domain/1.0.0": {
+        "dependencies": {
+          "Dapper": "2.0.123"
+        },
         "runtime": {
           "DailyRoutines.Domain.dll": {}
         }

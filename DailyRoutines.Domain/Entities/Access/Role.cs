@@ -1,10 +1,14 @@
-﻿using DailyRoutines.Domain.Entities.Common;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DailyRoutines.Domain.Entities.Access
 {
-    public class Role : BaseEntity
+    public class Role 
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid ActionId { get; set; }
+
         [Display(Name = "عنوان مقام")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]

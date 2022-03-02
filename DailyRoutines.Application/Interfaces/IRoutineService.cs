@@ -16,10 +16,10 @@ public interface IRoutineService
     FilterActionsDTO GetActionsOfCategory(FilterActionsDTO filter);
     FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter);
     EditCategoryDTO GetCategoryForEdit(Guid categoryId);
-    ResultTypes AddCategory(UserCategory category);
+    ResultTypes AddCategory(Category category);
     ResultTypes DeleteCategory(Guid categoryId);
-    ResultTypes EditCategory(UserCategory category);
-    UserCategory GetCategoryById(Guid categoryId);
+    ResultTypes EditCategory(Category category);
+    Category GetCategoryById(Guid categoryId);
     Guid GetUserIdOfCategory(Guid categoryId);
 
     ResultTypes AddAction(Action action);

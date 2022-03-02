@@ -1,146 +1,249 @@
-﻿using DailyRoutines.Application.Extensions;
-using DailyRoutines.Application.Generator;
-using DailyRoutines.Domain.DTOs.User;
+﻿using DailyRoutines.Domain.DTOs.User;
 using DailyRoutines.Domain.Entities.User;
 using DailyRoutines.Domain.Interfaces;
-using DailyRoutines.Infrastructure.Context;
-using Microsoft.EntityFrameworkCore;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using DailyRoutines.Application.Convertors;
 
 namespace DailyRoutines.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly DailyRoutinesDbContext _context;
+    private readonly IDbConnection _db;
 
-    public UserRepository(DailyRoutinesDbContext context)
+    public UserRepository(IConfiguration configuration)
     {
-        _context = context;
+        _db = new SqlConnection(configuration.GetConnectionString("DailyRoutinesDbConnection"));
     }
 
-    public void AddUser(User user) => _context.Users.Add(user);
 
-    public void UpdateUser(User user) =>
-        _context.Users.Update(user);
-
-    public void RemoveUser(User user) =>
-        _context.Users.Remove(user);
-
-    public bool IsUserExist(string email, string password) =>
-        _context.Users.Any(c => c.Email == email && c.Password == password);
-
-    public bool IsUserExist(Guid userId) =>
-        _context.Users.IgnoreQueryFilters()
-            .Any(c => c.Id == userId);
-
-    public User GetUserByEmail(string email) =>
-        _context.Users.SingleOrDefault(c => c.Email == email);
-
-    public User GetUserById(Guid userId) =>
-        _context.Users.IgnoreQueryFilters()
-            .SingleOrDefault(c => c.Id == userId);
-
-    public bool IsUserPhoneNumberExists(string phoneNumber) =>
-        _context.Users.Any(c => c.PhoneNumber == phoneNumber);
-
-    public bool IsUserEmailExists(string email) =>
-        _context.Users.Any(c => c.Email == email);
-
-    public UserDashboardDTO GetUserDashboard(Guid userId) =>
-        _context.Users.Where(c => c.Id == userId)
-            .Select(c => new UserDashboardDTO()
-            {
-                FirstName = c.FirstName,
-                LastName = c.LastName,
-                Email = c.Email,
-                PhoneNumber = c.PhoneNumber,
-            }).SingleOrDefault();
-
-    public EditUserDTO GetUserForEdit(Guid userId) =>
-        _context.Users.Where(c => c.Id == userId)
-            .IgnoreQueryFilters()
-            .Select(c => new EditUserDTO()
-            {
-                UserId = c.Id,
-                Email = c.Email,
-                FirstName = c.FirstName,
-                LastName = c.LastName,
-                PhoneNumber = c.PhoneNumber,
-                Roles = c.UserRoles.Select(r => r.RoleId).ToList()
-            }).SingleOrDefault();
-
-    public UserInformationDTO GetUserInformation(Guid userId) =>
-        _context.Users.Where(c => c.Id == userId)
-            .Select(c => new UserInformationDTO(
-                c.Id,
-                c.FirstName,
-                c.LastName,
-                c.PhoneNumber,
-                c.Email,
-                c.CreateDate.ToPersianDateTime(),
-                c.IsBlock))
-            .IgnoreQueryFilters()
-            .SingleOrDefault();
-
-    public FilterUsersDTO GetUsers(FilterUsersDTO filter)
+    public void AddUser(User user)
     {
-        IQueryable<User> users = _context.Users;
+        string query =
+            "INSERT INTO [User].[Users] ([FirstName],[LastName],[PhoneNumber],[Email],[Password],[IsBlock])" +
+            "OUTPUT CAST([Inserted].[UserId] AS UNIQUEIDENTIFIER) AS [UserId]" +
+            "VALUES (@FirstName,@LastName,@PhoneNumber,@Email,@Password,@IsBlock);";
 
-
-        switch (filter.Type)
+        var userId = _db.QuerySingleOrDefault<Guid>(query, new
         {
-            case "all":
-                {
-                    users = users.IgnoreQueryFilters();
+            user.FirstName,
+            user.LastName,
+            user.PhoneNumber,
+            user.Email,
+            user.Password,
+            user.IsBlock
+        });
+    }
 
-                    filter.Type = "all";
+    public void UpdateUser(User user)
+    {
+        string query =
+            "UPDATE [User].[Users] SET" +
+            "[FirstName] = @FirstName, " +
+            "[LastName] = @LastName, " +
+            "[PhoneNumber] = @PhoneNumber, " +
+            "[Email] = @Email, " +
+            "[Password] = @Password" +
+            "[LastUpdateDate] = @LastUpdateDate, " +
+            "[IsBlock] = @IsBlock" +
+            "WHERE [UserId] = @UserId;";
 
-                    break;
-                }
+
+        _db.Execute(query, new
+        {
+            user.FirstName,
+            user.LastName,
+            user.PhoneNumber,
+            user.Email,
+            user.Password,
+            @LastUpdateDate = DateTime.Now,
+            user.IsBlock,
+            user.UserId
+        });
+    }
+
+    public bool IsUserExist(string email, string password)
+    {
+        string query = "SELECT (CASE WHEN EXISTS(" +
+                       "SELECT NULL " +
+                       "FROM [User].[Users] " +
+                       "WHERE ([Email] = @Email) AND ([Password] = @Password)) " +
+                       "THEN 1 ELSE 0 END) AS[Value]";
+
+        return _db.QuerySingleOrDefault<bool>(query, new
+        {
+            email,
+            password
+        });
+    }
+
+    public bool IsUserExist(Guid userId)
+    {
+        string query = "SELECT (CASE WHEN EXISTS( " +
+                       "SELECT NULL " +
+                       "FROM [User].[Users] " +
+                       "WHERE [UserId] = @UserId " +
+                       "THEN 1 ELSE 0 END) AS[Value]";
+
+        return _db.QuerySingleOrDefault<bool>(query, new
+        {
+            userId
+        });
+    }
+
+    public User GetUserByEmail(string email)
+    {
+        string query =
+            "SELECT [UserId],[FirstName],[LastName],[PhoneNumber],[Email]," +
+            "[Password],[CreateDate],[LastUpdateDate],[IsBlock] " +
+            "FROM [User].[Users] " +
+            "WHERE [Email] = @Email;";
+
+        return _db.QuerySingleOrDefault<User>(query, new
+        {
+            email
+        });
+    }
+
+    public User GetUserById(Guid userId)
+    {
+        string query =
+            "SELECT [UserId],[FirstName],[LastName],[PhoneNumber],[Email]," +
+            "[Password],[CreateDate],[LastUpdateDate],[IsBlock] " +
+            "FROM [User].[Users] " +
+            "WHERE [UserId] = @UserId;";
+
+        return _db.QuerySingleOrDefault<User>(query, new
+        {
+            userId
+        });
+    }
+
+    public bool IsUserPhoneNumberExists(string phoneNumber)
+    {
+        string query = "SELECT (CASE WHEN EXISTS( " +
+                       "SELECT NULL " +
+                       "FROM [User].[Users] " +
+                       "WHERE [PhoneNumber] = @PhoneNumber " +
+                       "THEN 1 ELSE 0 END) AS[Value]";
+
+        return _db.QuerySingleOrDefault<bool>(query, new
+        {
+            phoneNumber
+        });
+    }
+
+    public bool IsUserEmailExists(string email)
+    {
+        string query = "SELECT (CASE WHEN EXISTS( " +
+                       "SELECT NULL " +
+                       "FROM [User].[Users] " +
+                       "WHERE [Email] = @Email " +
+                       "THEN 1 ELSE 0 END) AS[Value]";
+
+        return _db.QuerySingleOrDefault<bool>(query, new
+        {
+            email
+        });
+    }
+
+    public int GetProductsCount(string type, string filter)
+    {
+        string query = "SELECT COUNT(*) FROM [User].[Users] ";
+
+        switch (type)
+        {
             case "active":
                 {
-                    filter.Type = "active";
+                    query += "WHERE ([IsBlock] = 0)";
 
                     break;
                 }
             case "blocked":
                 {
-                    users = users.Where(c => c.IsBlock)
-                        .IgnoreQueryFilters();
-
-                    filter.Type = "all";
+                    query += "WHERE ([IsBlock] = 1)";
 
                     break;
                 }
-            default:
+            case "all":
                 {
-                    filter.Type = "active";
-
                     break;
                 }
         }
 
+        if (string.IsNullOrEmpty(filter))
+        {
+            query += "([FirstName] LIKE N'%@Search%') OR " +
+                     "([LastName] LIKE N'%@Search%') OR " +
+                     "([PhoneNumber] LIKE N'%@Search%') OR " +
+                     "([Email] LIKE N'%@Search%')";
+        }
 
-        if (!string.IsNullOrEmpty(filter.Search))
-            users = users.Where(c => c.FirstName.Contains(filter.Search) ||
-                                     c.LastName.Contains(filter.Search) ||
-                                     c.PhoneNumber.Contains(filter.Search) ||
-                                     c.Email.Contains(filter.Search));
-
-        int pagesCount = (int)Math.Ceiling(users.Count() / (double)filter.TakeEntity);
-
-        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
-
-        var categories = users
-            .Select(c => new UsersListDTO(c.Id, c.FullName, c.PhoneNumber, c.Email, c.IsBlock))
-            .Paging(pager).ToList();
-
-        return filter.SetItems(categories)
-            .SetPaging(pager);
+        return _db.QuerySingleOrDefault<int>(query, new
+        {
+            @search = filter
+        });
     }
 
-    public void SaveChanges() =>
-        _context.SaveChanges();
+    public UserDashboardDTO GetUserDashboard(Guid userId)
+    {
+        string query =
+            "SELECT [FirstName],[LastName],[PhoneNumber],[Email] " +
+            "FROM [User].[Users] WHERE [UserId] = @UserId;";
+        
+        return _db.QuerySingleOrDefault<UserDashboardDTO>(query, new
+        {
+            userId
+        });
+    }
+
+    public EditUserDTO GetUserForEdit(Guid userId)
+    {
+        string query =
+            "SELECT [Users].[UserId], " +
+            "[Users].[FirstName], " +
+            "[Users].[LastName], " +
+            "[Users].[PhoneNumber], " +
+            "[Users].[Email], " +
+            "[Access].[UserRoles].[RoleId] AS [Roles] " +
+            "FROM [User].[Users] " +
+            "LEFT OUTER JOIN [Access].[UserRoles] " +
+            "ON [User].[Users].[UserId] = [Access].[UserRoles].[UserId] " +
+            "WHERE [Users].[UserId] = @UserId";
+
+        return _db.QuerySingleOrDefault<EditUserDTO>(query, new
+        {
+            userId
+        });
+    }
+
+    public UserInformationDTO GetUserInformation(Guid userId)
+    {
+        string query =
+            "SELECT [UserId],[FirstName],[LastName],[PhoneNumber],[Email]," +
+            "[CreateDate],[IsBlock] " +
+            "FROM [User].[Users] " +
+            "WHERE [UserId] = @UserId;";
+
+        return _db.QuerySingleOrDefault<UserInformationDTO>(query, new
+        {
+            userId
+        });
+    }
+
+    public List<UsersListDTO> GetUsers(int skip, int take, string type, string filter)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("@Skip", skip);
+        parameters.Add("@Take", skip);
+        parameters.Add("@Search", skip);
+        parameters.Add("@Type", skip);
+
+        return _db.Query<UsersListDTO>("[User].[uspGetUsers]", parameters,
+            commandType: CommandType.StoredProcedure).ToList();
+    }
 }

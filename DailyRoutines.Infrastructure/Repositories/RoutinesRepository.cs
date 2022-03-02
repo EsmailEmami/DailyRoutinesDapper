@@ -26,7 +26,7 @@ public class RoutinesRepository : IRoutineRepository
 
     public FilterCategoriesDTO GetUserCategories(FilterCategoriesDTO filter)
     {
-        IQueryable<UserCategory> categoriesQuery = _context.UserCategories
+        IQueryable<Category> categoriesQuery = _context.UserCategories
             .Where(c => c.UserId == filter.UserId);
 
         if (!string.IsNullOrEmpty(filter.Search))
@@ -55,7 +55,7 @@ public class RoutinesRepository : IRoutineRepository
 
     public FilterCategoriesDTO GetUserRecycleCategories(FilterCategoriesDTO filter)
     {
-        IQueryable<UserCategory> categoriesQuery = _context.UserCategories
+        IQueryable<Category> categoriesQuery = _context.UserCategories
             .Where(c => c.UserId == filter.UserId && c.IsDelete == true)
             .IgnoreQueryFilters();
 
@@ -86,17 +86,17 @@ public class RoutinesRepository : IRoutineRepository
             .Select(c => new EditCategoryDTO(c.Id, c.CategoryTitle))
             .SingleOrDefault();
 
-    public UserCategory GetCategoryById(Guid categoryId) =>
+    public Category GetCategoryById(Guid categoryId) =>
         _context.UserCategories.IgnoreQueryFilters()
             .SingleOrDefault(c => c.Id == categoryId);
 
-    public void RemoveCategory(UserCategory category) =>
+    public void RemoveCategory(Category category) =>
         _context.UserCategories.Remove(category);
 
-    public void AddCategory(UserCategory category) =>
+    public void AddCategory(Category category) =>
         _context.UserCategories.Add(category);
 
-    public void UpdateCategory(UserCategory category) =>
+    public void UpdateCategory(Category category) =>
         _context.UserCategories.Update(category);
 
     public List<ItemsForSelectDTO> GetUserCategoriesForSelect(Guid userId) =>

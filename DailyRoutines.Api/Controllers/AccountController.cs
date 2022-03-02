@@ -145,6 +145,11 @@ public class AccountController : SiteBaseController
     {
         var user = _userService.GetUserById(User.GetUserId());
 
+        if (user == null)
+        {
+            return JsonResponseStatus.Error("کاربری یافت نشد");
+        }
+
         return JsonResponseStatus.Success(new
         {
             userId = user.Id,
