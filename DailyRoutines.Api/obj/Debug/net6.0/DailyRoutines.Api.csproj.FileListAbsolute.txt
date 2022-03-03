@@ -957,14 +957,11 @@ C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines.Api.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\DailyRoutines.Api.pdb
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\AdvancedStringBuilder.dll
-C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\AutoMapper.dll
-C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Dapper.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Humanizer.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\MessagePack.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\MessagePack.Annotations.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Microsoft.AspNetCore.Razor.Language.dll

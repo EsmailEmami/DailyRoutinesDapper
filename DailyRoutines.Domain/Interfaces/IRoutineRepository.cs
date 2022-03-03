@@ -24,6 +24,9 @@ namespace DailyRoutines.Domain.Interfaces
 
         Guid GetUserIdOfCategory(Guid categoryId);
 
+        // type = active, recycle
+        int GetCategoriesCount(string type, string filter);
+
         #endregion
 
 
@@ -32,6 +35,9 @@ namespace DailyRoutines.Domain.Interfaces
         List<ActionsListDTO> GetActionsOfCategory(Guid categoryId, int skip, int take, string filter, int year, int month, int day);
 
         List<DatesOfCategoryActionsDTO> GetActionsMonthOfCategory(Guid categoryId, int year);
+
+        int GetUserActionsCount(Guid userId, int year, int month, int day, string filter);
+        int GetCategoryActionsCount(Guid categoryId, int year, int month, int day, string filter);
 
         List<int> GetYearsOfCategoryActions(Guid categoryId);
         List<int> GetYearsOfActions(Guid userId);

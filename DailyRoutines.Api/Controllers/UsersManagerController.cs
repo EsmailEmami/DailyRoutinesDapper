@@ -148,12 +148,12 @@ public class UsersManagerController : SiteBaseController
         if (editUser != ResultTypes.Successful)
             return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
 
-        var removeRoles = _accessService.RemoveAllUserRoles(user.Id);
+        var removeRoles = _accessService.RemoveAllUserRoles(user.UserId);
         if (removeRoles != ResultTypes.Successful)
             return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
 
 
-        var addRoles = _accessService.AddUserRole(user.Id, userData.Roles);
+        var addRoles = _accessService.AddUserRole(user.UserId, userData.Roles);
         if (addRoles != ResultTypes.Successful)
             return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
 
@@ -214,7 +214,7 @@ public class UsersManagerController : SiteBaseController
         if (addUser != ResultTypes.Successful)
             return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
 
-        var addRoles = _accessService.AddUserRole(user.Id, userData.Roles);
+        var addRoles = _accessService.AddUserRole(user.UserId, userData.Roles);
         if (addRoles != ResultTypes.Successful)
             return JsonResponseStatus.Error("متاسفانه مشکلی پیش آمده است! لطفا دوباره تلاش کنید.");
 

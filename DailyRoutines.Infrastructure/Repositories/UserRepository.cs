@@ -2,11 +2,11 @@
 using DailyRoutines.Domain.Entities.User;
 using DailyRoutines.Domain.Interfaces;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace DailyRoutines.Infrastructure.Repositories;
@@ -194,7 +194,7 @@ public class UserRepository : IUserRepository
         string query =
             "SELECT [FirstName],[LastName],[PhoneNumber],[Email] " +
             "FROM [User].[Users] WHERE [UserId] = @UserId;";
-        
+
         return _db.QuerySingleOrDefault<UserDashboardDTO>(query, new
         {
             userId

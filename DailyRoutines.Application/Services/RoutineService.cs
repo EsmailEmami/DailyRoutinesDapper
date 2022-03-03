@@ -1,14 +1,15 @@
 ﻿using DailyRoutines.Application.Convertors;
+using DailyRoutines.Application.Extensions;
+using DailyRoutines.Application.Generator;
 using DailyRoutines.Application.Interfaces;
+using DailyRoutines.Domain.DTOs.Common;
 using DailyRoutines.Domain.DTOs.Routine;
+using DailyRoutines.Domain.Entities.Routine;
 using DailyRoutines.Domain.Enums;
 using DailyRoutines.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DailyRoutines.Application.Extensions;
-using DailyRoutines.Domain.DTOs.Common;
-using DailyRoutines.Domain.Entities.Routine;
 using Action = DailyRoutines.Domain.Entities.Routine.Action;
 
 namespace DailyRoutines.Application.Services;
@@ -23,17 +24,69 @@ public class RoutineService : IRoutineService
     }
 
 
-    public FilterCategoriesDTO GetCategories(FilterCategoriesDTO filter) =>
-        _routine.GetUserCategories(filter);
+    public FilterCategoriesDTO GetCategories(FilterCategoriesDTO filter)
+    {
+        int count = _routine.GetCategoriesCount("active", filter.Search);
 
-    public FilterCategoriesDTO GetRecycleCategories(FilterCategoriesDTO filter) =>
-        _routine.GetUserRecycleCategories(filter);
 
-    public FilterActionsDTO GetActionsOfCategory(FilterActionsDTO filter) =>
-        _routine.GetActionsOfCategory(filter);
+        int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
 
-    public FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter) =>
-        _routine.GetLastUserActions(filter);
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var data = _routine.GetUserCategories(filter.UserId, pager.SkipEntity, pager.TakeEntity, filter.OrderBy, filter.Search);
+
+        return filter.SetItems(data)
+            .SetPaging(pager);
+    }
+
+
+    public FilterCategoriesDTO GetRecycleCategories(FilterCategoriesDTO filter)
+    {
+        int count = _routine.GetCategoriesCount("recycle", filter.Search);
+
+
+        int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
+
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var data = _routine.GetUserRecycleCategories(filter.UserId, pager.SkipEntity, pager.TakeEntity, filter.OrderBy, filter.Search);
+
+        return filter.SetItems(data)
+            .SetPaging(pager);
+    }
+
+
+    public FilterActionsDTO GetActionsOfCategory(FilterActionsDTO filter)
+    {
+        int count = _routine.GetCategoryActionsCount(filter.CategoryId,
+            filter.Year, filter.Month, filter.Day, filter.Search);
+
+
+        int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
+
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var data = _routine.GetActionsOfCategory(filter.CategoryId, pager.SkipEntity, pager.TakeEntity, filter.Search, filter.Year, filter.Month, filter.Day);
+
+        return filter.SetItems(data)
+            .SetPaging(pager);
+    }
+
+    public FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter)
+    {
+        int count = _routine.GetUserActionsCount(filter.UserId,
+            filter.Year, filter.Month, filter.Day, filter.Search);
+
+
+        int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
+
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var data = _routine.GetLastUserActions(filter.UserId, pager.SkipEntity, pager.TakeEntity, filter.Search, filter.Year, filter.Month, filter.Day);
+
+        return filter.SetItems(data)
+            .SetPaging(pager);
+    }
 
     public ResultTypes EditCategory(Category category)
     {
@@ -63,7 +116,7 @@ public class RoutineService : IRoutineService
 
             var category = _routine.GetCategoryById(action.CategoryId);
 
-            if (category == null) 
+            if (category == null)
                 return ResultTypes.Failed;
 
 

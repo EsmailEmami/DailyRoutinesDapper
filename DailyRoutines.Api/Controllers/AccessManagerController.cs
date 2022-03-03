@@ -47,9 +47,7 @@ public class AccessManagerController : SiteBaseController
 
         var role = new Role()
         {
-            RoleName = roleData.RoleName,
-            CreateDate = DateTime.Now,
-            LastUpdateDate = DateTime.Now,
+            RoleName = roleData.RoleName
         };
 
         var addRole = _accessService.AddRole(role);

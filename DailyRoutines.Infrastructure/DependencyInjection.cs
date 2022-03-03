@@ -1,14 +1,11 @@
-﻿
-using DailyRoutines.Application.Convertors;
+﻿using DailyRoutines.Application.Convertors;
 using DailyRoutines.Application.Interfaces;
 using DailyRoutines.Application.Senders;
 using DailyRoutines.Application.Services;
 using DailyRoutines.Domain.Interfaces;
-using DailyRoutines.Infrastructure.Context;
 using DailyRoutines.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -20,13 +17,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        #region Db Context
-
-        services.AddDbContext<DailyRoutinesDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DailyRoutinesDbConnection")));
-
-        #endregion
-
         #region IoC
 
         //services 

@@ -94,7 +94,7 @@ public class ActionsManagerController : SiteBaseController
             CreatePersianYear = DateTime.Now.ToPersianYear(),
             CreatePersianMonth = DateTime.Now.ToPersianMonth(),
             CreatePersianDay = DateTime.Now.ToPersianDay(),
-            UserCategoryId = action.UserCategoryId
+            CategoryId = action.UserCategoryId
         };
 
 

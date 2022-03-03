@@ -1,18 +1,13 @@
-﻿using DailyRoutines.Application.Convertors;
-using DailyRoutines.Application.Extensions;
-using DailyRoutines.Application.Generator;
-using DailyRoutines.Domain.DTOs.Common;
+﻿using DailyRoutines.Domain.DTOs.Common;
 using DailyRoutines.Domain.DTOs.Routine;
 using DailyRoutines.Domain.Entities.Routine;
 using DailyRoutines.Domain.Interfaces;
-using DailyRoutines.Infrastructure.Context;
 using Dapper;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using Action = DailyRoutines.Domain.Entities.Routine.Action;
 
@@ -151,6 +146,28 @@ public class RoutinesRepository : IRoutineRepository
         });
     }
 
+    public int GetCategoriesCount(string type, string filter)
+    {
+        string query = "SELECT COUNT(*) FROM [User].[Categories] ";
+
+        query += type switch
+        {
+            "active" => "WHERE ([IsDelete] = 0)",
+            "recycle" => "WHERE ([IsDelete] = 1)",
+            _ => "WHERE ([IsDelete] = 0)"
+        };
+
+        if (string.IsNullOrEmpty(filter))
+        {
+            query += " AND ([CategoryTitle] LIKE N'%@Search%')";
+        }
+
+        return _db.QuerySingleOrDefault<int>(query, new
+        {
+            @Search = filter
+        });
+    }
+
     public List<ActionsListDTO> GetLastUserActions(Guid userId, int skip, int take, string filter, int year, int month, int day)
     {
         var parameters = new DynamicParameters();
@@ -194,6 +211,82 @@ public class RoutinesRepository : IRoutineRepository
             categoryId,
             year
         }).ToList();
+    }
+
+    public int GetUserActionsCount(Guid userId, int year, int month, int day, string filter)
+    {
+        string query = "SELECT COUNT(*) FROM [User].[Actions] " +
+                       "INNER JOIN[User].[Categories] " +
+                       "ON[User].[Actions].[CategoryId] = [User].[Categories].[CategoryId] " +
+                       "WHERE([Categories].[UserId] = @UserId)";
+
+        if (year > 0)
+        {
+            query += "  AND ([Actions].[CreatePersianYear] = @Year)";
+
+
+            if (month > 0)
+            {
+                query += "  AND ([Actions].[CreatePersianMonth] = @Month)";
+
+                if (day > 0)
+                {
+                    query += "  AND ([Actions].[CreatePersianDay] = @Day)";
+                }
+            }
+        }
+
+        if (string.IsNullOrEmpty(filter))
+        {
+            query += " AND ([Actions].[ActionTitle] LIKE N'%@Search%') OR " +
+                     "([Actions].[ActionDescription] LIKE N'%@Search%')";
+        }
+
+        return _db.QuerySingleOrDefault<int>(query, new
+        {
+            userId,
+            year,
+            month,
+            day,
+            @Search = filter
+        });
+    }
+
+    public int GetCategoryActionsCount(Guid categoryId, int year, int month, int day, string filter)
+    {
+        string query = "SELECT COUNT(*) FROM [User].[Actions] " +
+                       "WHERE([CategoryId] = @CategoryId)";
+
+        if (year > 0)
+        {
+            query += "  AND ([CreatePersianYear] = @Year)";
+
+
+            if (month > 0)
+            {
+                query += "  AND ([CreatePersianMonth] = @Month)";
+
+                if (day > 0)
+                {
+                    query += "  AND ([CreatePersianDay] = @Day)";
+                }
+            }
+        }
+
+        if (string.IsNullOrEmpty(filter))
+        {
+            query += " AND ([ActionTitle] LIKE N'%@Search%') OR " +
+                     "([ActionDescription] LIKE N'%@Search%')";
+        }
+
+        return _db.QuerySingleOrDefault<int>(query, new
+        {
+            categoryId,
+            year,
+            month,
+            day,
+            @Search = filter
+        });
     }
 
     public List<int> GetYearsOfCategoryActions(Guid categoryId)

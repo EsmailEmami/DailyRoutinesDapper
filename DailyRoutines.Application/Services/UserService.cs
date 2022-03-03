@@ -88,9 +88,9 @@ public class UserService : IUserService
 
         var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
 
-        var categories = _user.GetUsers(filter.SkipEntity, filter.TakeEntity, filter.Type, filter.Search);
+        var data = _user.GetUsers(pager.SkipEntity, pager.TakeEntity, filter.Type, filter.Search);
 
-        return filter.SetItems(categories)
+        return filter.SetItems(data)
             .SetPaging(pager);
     }
 
