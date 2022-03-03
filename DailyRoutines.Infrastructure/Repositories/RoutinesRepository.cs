@@ -151,95 +151,34 @@ public class RoutinesRepository : IRoutineRepository
         });
     }
 
-    public FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter)
+    public List<ActionsListDTO> GetLastUserActions(Guid userId, int skip, int take, string filter, int year, int month, int day)
     {
-        IQueryable<Action> actionsQuery = _context.Actions
-            .Where(c => c.UserCategory.UserId == filter.UserId).
-            OrderByDescending(c => c.CreateDate);
+        var parameters = new DynamicParameters();
+        parameters.Add("@UserId", userId);
+        parameters.Add("@Skip", skip);
+        parameters.Add("@Take", take);
+        parameters.Add("@Search", filter);
+        parameters.Add("@Year", year);
+        parameters.Add("@Month", month);
+        parameters.Add("@Day", day);
 
-        if (filter.Year != 0)
-        {
-            actionsQuery = actionsQuery.Where(c => c.CreatePersianYear == filter.Year);
-        }
-
-        if (filter.Month != 0)
-        {
-            actionsQuery = actionsQuery.Where(c => c.CreatePersianMonth == filter.Month);
-        }
-
-        if (filter.Day != 0)
-        {
-            actionsQuery = actionsQuery.Where(c => c.CreatePersianDay == filter.Day);
-        }
-
-        if (!string.IsNullOrEmpty(filter.Search))
-            actionsQuery = actionsQuery
-                .Where(c => c.ActionTitle.Contains(filter.Search) ||
-                            c.ActionDescription.Contains(filter.Search));
-
-
-        int pagesCount = (int)Math.Ceiling(actionsQuery.Count() / (double)filter.TakeEntity);
-
-        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
-
-
-
-        var actions = actionsQuery
-            .Select(c => new ActionsListDTO(
-                c.Id,
-                c.ActionTitle,
-                c.CreateDate.ToPersianDateTime()))
-            .Paging(pager).ToList();
-
-        return filter.SetItems(actions)
-            .SetPaging(pager);
+        return _db.Query<ActionsListDTO>("[User].[uspGetUserActions]", parameters,
+            commandType: CommandType.StoredProcedure).ToList();
     }
 
-    public FilterActionsDTO GetActionsOfCategory(FilterActionsDTO filter)
+    public List<ActionsListDTO> GetActionsOfCategory(Guid categoryId, int skip, int take, string filter, int year, int month, int day)
     {
-        IQueryable<Action> actionsQuery = _context.Actions
-            .Where(c => c.UserCategoryId == filter.CategoryId).
-            OrderByDescending(c => c.CreateDate);
+        var parameters = new DynamicParameters();
+        parameters.Add("@CategoryId", categoryId);
+        parameters.Add("@Skip", skip);
+        parameters.Add("@Take", take);
+        parameters.Add("@Search", filter);
+        parameters.Add("@Year", year);
+        parameters.Add("@Month", month);
+        parameters.Add("@Day", day);
 
-        if (filter.Year != 0)
-        {
-            actionsQuery = actionsQuery.Where(c => c.CreatePersianYear == filter.Year);
-        }
-
-        if (filter.Year != 0 && filter.Month != 0)
-        {
-            actionsQuery = actionsQuery.Where(c => c.CreatePersianYear == filter.Year &&
-                                                   c.CreatePersianMonth == filter.Month);
-        }
-
-        if (filter.Year != 0 && filter.Month != 0 && filter.Day != 0)
-        {
-            actionsQuery = actionsQuery.Where(c => c.CreatePersianYear == filter.Year &&
-                                                   c.CreatePersianMonth == filter.Month &&
-                                                   c.CreatePersianDay == filter.Day);
-        }
-
-        if (!string.IsNullOrEmpty(filter.Search))
-            actionsQuery = actionsQuery
-                .Where(c => c.ActionTitle.Contains(filter.Search) ||
-                            c.ActionDescription.Contains(filter.Search));
-
-
-        int pagesCount = (int)Math.Ceiling(actionsQuery.Count() / (double)filter.TakeEntity);
-
-        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
-
-
-
-        var actions = actionsQuery
-            .Select(c => new ActionsListDTO(
-                c.Id,
-                c.ActionTitle,
-                c.CreateDate.ToPersianDateTime()))
-            .Paging(pager).ToList();
-
-        return filter.SetItems(actions)
-            .SetPaging(pager);
+        return _db.Query<ActionsListDTO>("[User].[uspGetCategoryActions]", parameters,
+            commandType: CommandType.StoredProcedure).ToList();
     }
 
     public List<DatesOfCategoryActionsDTO> GetActionsMonthOfCategory(Guid categoryId, int year)
@@ -378,7 +317,7 @@ public class RoutinesRepository : IRoutineRepository
 
         _db.Execute(query, new
         {
-            action
+            actionId
         });
     }
 

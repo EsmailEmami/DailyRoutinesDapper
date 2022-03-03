@@ -28,8 +28,8 @@ namespace DailyRoutines.Domain.Interfaces
 
 
 
-        FilterUserLastActionsDTO GetLastUserActions(FilterUserLastActionsDTO filter);
-        FilterActionsDTO GetActionsOfCategory(FilterActionsDTO filter);
+        List<ActionsListDTO> GetLastUserActions(Guid categoryId, int skip, int take, string filter, int year, int month, int day);
+        List<ActionsListDTO> GetActionsOfCategory(Guid categoryId, int skip, int take, string filter, int year, int month, int day);
 
         List<DatesOfCategoryActionsDTO> GetActionsMonthOfCategory(Guid categoryId, int year);
 
