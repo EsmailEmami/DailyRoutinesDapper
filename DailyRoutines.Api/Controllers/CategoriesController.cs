@@ -152,6 +152,7 @@ public class CategoriesController : SiteBaseController
         if (category == null)
             return JsonResponseStatus.NotFound("دسته بندی یافت نشد.");
 
+        category.LastUpdateDate = DateTime.Now;
         category.IsDelete = false;
 
         var editCategory = _routineService.EditCategory(category);

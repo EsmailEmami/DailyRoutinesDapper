@@ -26,7 +26,7 @@ public class RoutineService : IRoutineService
 
     public FilterCategoriesDTO GetCategories(FilterCategoriesDTO filter)
     {
-        int count = _routine.GetCategoriesCount("active", filter.Search);
+        int count = _routine.GetCategoriesCount(filter.UserId, "active", filter.Search);
 
 
         int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
@@ -42,7 +42,7 @@ public class RoutineService : IRoutineService
 
     public FilterCategoriesDTO GetRecycleCategories(FilterCategoriesDTO filter)
     {
-        int count = _routine.GetCategoriesCount("recycle", filter.Search);
+        int count = _routine.GetCategoriesCount(filter.UserId, "recycle", filter.Search);
 
 
         int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);

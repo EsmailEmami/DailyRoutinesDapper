@@ -108,15 +108,17 @@ public class RoutinesRepository : IRoutineRepository
     public void UpdateCategory(Category category)
     {
         string query =
-            "UPDATE [User].[Categories] SET" +
+            "UPDATE [User].[Categories] SET " +
             "[CategoryTitle] = @CategoryTitle, " +
             "[LastUpdateDate] = @LastUpdateDate, " +
+            "[IsDelete] = @IsDelete " +
             "WHERE [CategoryId] = @CategoryId;";
 
         _db.Execute(query, new
         {
             category.CategoryTitle,
             category.LastUpdateDate,
+            category.IsDelete,
             category.CategoryId
         });
     }
@@ -147,24 +149,26 @@ public class RoutinesRepository : IRoutineRepository
         });
     }
 
-    public int GetCategoriesCount(string type, string filter)
+    public int GetCategoriesCount(Guid userId, string type, string filter)
     {
-        string query = "SELECT COUNT(*) FROM [User].[Categories] ";
+        string query = "SELECT COUNT(*) FROM [User].[Categories] " +
+                       "WHERE ([UserId] = @UserId) ";
 
         query += type switch
         {
-            "active" => "WHERE ([IsDelete] = 0)",
-            "recycle" => "WHERE ([IsDelete] = 1)",
-            _ => "WHERE ([IsDelete] = 0)"
+            "active" => "AND ([IsDelete] = 0)",
+            "recycle" => "AND ([IsDelete] = 1)",
+            _ => "AND ([IsDelete] = 0)"
         };
 
-        if (string.IsNullOrEmpty(filter))
+        if (!string.IsNullOrEmpty(filter))
         {
             query += " AND ([CategoryTitle] LIKE N'%@Search%')";
         }
 
         return _db.QuerySingleOrDefault<int>(query, new
         {
+            userId,
             @Search = filter
         });
     }
@@ -237,7 +241,7 @@ public class RoutinesRepository : IRoutineRepository
             }
         }
 
-        if (string.IsNullOrEmpty(filter))
+        if (!string.IsNullOrEmpty(filter))
         {
             query += " AND ([Actions].[ActionTitle] LIKE N'%@Search%') OR " +
                      "([Actions].[ActionDescription] LIKE N'%@Search%')";
@@ -274,7 +278,7 @@ public class RoutinesRepository : IRoutineRepository
             }
         }
 
-        if (string.IsNullOrEmpty(filter))
+        if (!string.IsNullOrEmpty(filter))
         {
             query += " AND ([ActionTitle] LIKE N'%@Search%') OR " +
                      "([ActionDescription] LIKE N'%@Search%')";
@@ -482,10 +486,10 @@ public class RoutinesRepository : IRoutineRepository
                        "[Categories].[CategoryId], " +
                        "[Categories].[CategoryTitle], " +
                        "dbo.PersianDateTime([Categories].[LastUpdateDate]) AS [LastUpdate], " +
-                       "COUNT([User].[Actions].[ActionId]) AS [ActionsCount] " +
+                       "(SELECT COUNT(*) " +
+                       "FROM [User].[Actions] " +
+                       "WHERE [CategoryId] = @CategoryId) AS [ActionsCount] " +
                        "FROM [User].[Categories] " +
-                       "LEFT OUTER JOIN [User].[Actions] " +
-                       "ON [User].[Categories].[CategoryId] = [User].[Actions].[CategoryId] " +
                        "WHERE [User].[Categories].[CategoryId] = @CategoryId;";
 
 

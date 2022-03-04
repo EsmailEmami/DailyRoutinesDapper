@@ -47,9 +47,9 @@ public class UserRepository : IUserRepository
             "[LastName] = @LastName, " +
             "[PhoneNumber] = @PhoneNumber, " +
             "[Email] = @Email, " +
-            "[Password] = @Password" +
+            "[Password] = @Password, " +
             "[LastUpdateDate] = @LastUpdateDate, " +
-            "[IsBlock] = @IsBlock" +
+            "[IsBlock] = @IsBlock " +
             "WHERE [UserId] = @UserId;";
 
 
@@ -86,7 +86,7 @@ public class UserRepository : IUserRepository
         string query = "SELECT (CASE WHEN EXISTS( " +
                        "SELECT NULL " +
                        "FROM [User].[Users] " +
-                       "WHERE [UserId] = @UserId " +
+                       "WHERE [UserId] = @UserId) " +
                        "THEN 1 ELSE 0 END) AS[Value]";
 
         return _db.QuerySingleOrDefault<bool>(query, new
@@ -151,7 +151,7 @@ public class UserRepository : IUserRepository
         });
     }
 
-    public int GetProductsCount(string type, string filter)
+    public int GetUsersCount(string type, string filter)
     {
         string query = "SELECT COUNT(*) FROM [User].[Users] ";
 
@@ -177,6 +177,16 @@ public class UserRepository : IUserRepository
 
         if (string.IsNullOrEmpty(filter))
         {
+            if (type == "all")
+            {
+                query += " WHERE ";
+            }
+            else
+            {
+                query += " AND ";
+            }
+
+
             query += "([FirstName] LIKE N'%@Search%') OR " +
                      "([LastName] LIKE N'%@Search%') OR " +
                      "([PhoneNumber] LIKE N'%@Search%') OR " +
@@ -204,21 +214,20 @@ public class UserRepository : IUserRepository
     public EditUserDTO GetUserForEdit(Guid userId)
     {
         string query =
-            "SELECT [Users].[UserId], " +
-            "[Users].[FirstName], " +
-            "[Users].[LastName], " +
-            "[Users].[PhoneNumber], " +
-            "[Users].[Email], " +
-            "[Access].[UserRoles].[RoleId] AS [Roles] " +
+            "SELECT [UserId],[FirstName],[LastName],[PhoneNumber],[Email] " +
             "FROM [User].[Users] " +
-            "LEFT OUTER JOIN [Access].[UserRoles] " +
-            "ON [User].[Users].[UserId] = [Access].[UserRoles].[UserId] " +
-            "WHERE [Users].[UserId] = @UserId";
+            "WHERE [Users].[UserId] = @UserId " +
+            "SELECT [RoleId] " +
+            "FROM  [Access].[UserRoles] " +
+            "WHERE [UserId] = @UserId";
 
-        return _db.QuerySingleOrDefault<EditUserDTO>(query, new
-        {
-            userId
-        });
+
+        using var list = _db.QueryMultiple(query, new {userId});
+
+        var data = list.ReadFirstOrDefault<EditUserDTO>();
+        data.Roles = list.Read<Guid>().ToList();
+
+        return data;
     }
 
     public UserInformationDTO GetUserInformation(Guid userId)

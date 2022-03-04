@@ -149,7 +149,7 @@ public class AccessRepository : IAccessRepository
                        "FROM [Access].[UserRoles] " +
                        "INNER JOIN [Access].[Roles] " +
                        "ON [Access].[UserRoles].[RoleId] = [Access].[Roles].[RoleId] " +
-                       "WHERE (WHERE [UserRoles].[UserId] = @UserId)";
+                       "WHERE ([UserRoles].[UserId] = @UserId)";
 
         if (!string.IsNullOrEmpty(filter))
         {

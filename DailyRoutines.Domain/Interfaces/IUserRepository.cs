@@ -17,7 +17,7 @@ namespace DailyRoutines.Domain.Interfaces
         bool IsUserPhoneNumberExists(string phoneNumber);
         bool IsUserEmailExists(string email);
 
-        int GetProductsCount(string type, string filter);
+        int GetUsersCount(string type, string filter);
 
         UserDashboardDTO GetUserDashboard(Guid userId);
         EditUserDTO GetUserForEdit(Guid userId);

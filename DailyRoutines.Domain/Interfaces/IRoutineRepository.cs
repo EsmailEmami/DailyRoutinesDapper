@@ -25,7 +25,7 @@ namespace DailyRoutines.Domain.Interfaces
         Guid GetUserIdOfCategory(Guid categoryId);
 
         // type = active, recycle
-        int GetCategoriesCount(string type, string filter);
+        int GetCategoriesCount(Guid userId, string type, string filter);
 
         #endregion
 

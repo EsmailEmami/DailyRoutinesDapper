@@ -81,7 +81,7 @@ public class UserService : IUserService
 
     public FilterUsersDTO GetUsers(FilterUsersDTO filter)
     {
-        int count = _user.GetProductsCount(filter.Type, filter.Search);
+        int count = _user.GetUsersCount(filter.Type, filter.Search);
 
 
         int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
