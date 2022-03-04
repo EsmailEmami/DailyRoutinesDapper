@@ -7,7 +7,7 @@ namespace DailyRoutines.Domain.Entities.Access
     public class Role 
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid ActionId { get; set; }
+        public Guid roleId { get; set; }
 
         [Display(Name = "عنوان مقام")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

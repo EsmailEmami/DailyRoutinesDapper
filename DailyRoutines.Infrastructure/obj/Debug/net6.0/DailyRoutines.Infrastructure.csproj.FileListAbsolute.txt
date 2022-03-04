@@ -56,7 +56,6 @@ C:\Projects\DailyRoutinesDapper\DailyRoutines\DailyRoutines.Infrastructure\obj\D
 C:\Projects\DailyRoutinesDapper\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\DailyRoutines.Infrastructure.genruntimeconfig.cache
 C:\Projects\DailyRoutinesDapper\DailyRoutines\DailyRoutines.Infrastructure\obj\Debug\net6.0\ref\DailyRoutines.Infrastructure.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.deps.json
-C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.runtimeconfig.json
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Infrastructure.pdb
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\bin\Debug\net6.0\DailyRoutines.Application.dll
@@ -72,5 +71,4 @@ C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\obj\Debug\net6.0\Da
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\obj\Debug\net6.0\DailyRoutines.Infrastructure.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\obj\Debug\net6.0\refint\DailyRoutines.Infrastructure.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\obj\Debug\net6.0\DailyRoutines.Infrastructure.pdb
-C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\obj\Debug\net6.0\DailyRoutines.Infrastructure.genruntimeconfig.cache
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Infrastructure\obj\Debug\net6.0\ref\DailyRoutines.Infrastructure.dll

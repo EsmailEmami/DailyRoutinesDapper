@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using DailyRoutines.Application.Extensions;
 using Action = DailyRoutines.Domain.Entities.Routine.Action;
 
 namespace DailyRoutines.Infrastructure.Repositories;
@@ -29,7 +30,7 @@ public class RoutinesRepository : IRoutineRepository
         parameters.Add("@Skip", skip);
         parameters.Add("@Take", take);
         parameters.Add("@Search", filter);
-        parameters.Add("@OrderBy", orderBy);
+        parameters.Add("@OrderBy", orderBy.Fixed());
 
         return _db.Query<CategoriesListDTO>("[User].[uspGetUserCategories]", parameters,
             commandType: CommandType.StoredProcedure).ToList();

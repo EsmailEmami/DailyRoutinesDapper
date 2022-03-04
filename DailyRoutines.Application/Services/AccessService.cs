@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DailyRoutines.Application.Extensions;
+using DailyRoutines.Application.Generator;
 using DailyRoutines.Domain.DTOs.Common;
 
 namespace DailyRoutines.Application.Services;
@@ -21,14 +22,48 @@ public class AccessService : IAccessService
         _role = role;
     }
 
-    public FilterUsersDTO GetUsersWithRole(FilterUsersDTO filter) =>
-        _role.GetUsersWithRole(filter);
+    public FilterUsersDTO GetUsersWithRole(FilterUsersDTO filter)
+    {
+        int count = _role.GetUsersWithRoleCount(filter.Search);
 
-    public FilterRolesDTO GetRoles(FilterRolesDTO filter) =>
-        _role.GetRoles(filter);
+        int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
 
-    public FilterRolesDTO GetUserRoles(Guid userId, FilterRolesDTO filter) =>
-        _role.GetUserRoles(userId, filter);
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var data = _role.GetUsersWithRole(pager.SkipEntity, pager.TakeEntity, filter.Type.Fixed(), filter.Search);
+
+        return filter.SetItems(data)
+            .SetPaging(pager);
+    }
+
+    public FilterRolesDTO GetRoles(FilterRolesDTO filter)
+    {
+        int count = _role.GetRolesCount(filter.Search);
+
+
+        int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
+
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var data = _role.GetRoles(pager.SkipEntity, pager.TakeEntity, filter.Search);
+
+        return filter.SetItems(data)
+            .SetPaging(pager);
+    }
+
+    public FilterRolesDTO GetUserRoles(Guid userId, FilterRolesDTO filter)
+    {
+        int count = _role.GetUserRolesCount(userId, filter.Search);
+
+        int pagesCount = (int)Math.Ceiling(count / (double)filter.TakeEntity);
+
+        var pager = Pager.Build(pagesCount, filter.PageId, filter.TakeEntity);
+
+        var data = _role.GetUserRoles(userId, pager.SkipEntity, pager.TakeEntity, filter.Search);
+
+        return filter.SetItems(data)
+            .SetPaging(pager);
+    }
 
     public EditRoleDTO GetRoleForEdit(Guid roleId) =>
         _role.GetRoleForEdit(roleId);
@@ -41,7 +76,6 @@ public class AccessService : IAccessService
         try
         {
             _role.AddRole(role);
-            _role.SaveChanges();
 
             return ResultTypes.Successful;
         }
@@ -56,7 +90,6 @@ public class AccessService : IAccessService
         try
         {
             _role.UpdateRole(role);
-            _role.SaveChanges();
 
             return ResultTypes.Successful;
         }
@@ -84,9 +117,6 @@ public class AccessService : IAccessService
                 _role.RemoveUserRole(userRole);
             }
 
-
-            _role.SaveChanges();
-
             return ResultTypes.Successful;
         }
         catch
@@ -110,9 +140,6 @@ public class AccessService : IAccessService
                 _role.AddUserRole(userRole);
             }
 
-
-            _role.SaveChanges();
-
             return ResultTypes.Successful;
         }
         catch
@@ -132,8 +159,6 @@ public class AccessService : IAccessService
 
 
             _role.RemoveUserRole(userRole);
-
-            _role.SaveChanges();
 
             return ResultTypes.Successful;
         }

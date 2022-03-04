@@ -239,9 +239,9 @@ public class UserRepository : IUserRepository
     {
         var parameters = new DynamicParameters();
         parameters.Add("@Skip", skip);
-        parameters.Add("@Take", skip);
-        parameters.Add("@Search", skip);
-        parameters.Add("@Type", skip);
+        parameters.Add("@Take", take);
+        parameters.Add("@Search", filter);
+        parameters.Add("@Type", type);
 
         return _db.Query<UsersListDTO>("[User].[uspGetUsers]", parameters,
             commandType: CommandType.StoredProcedure).ToList();
