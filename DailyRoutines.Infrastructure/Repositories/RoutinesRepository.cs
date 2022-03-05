@@ -507,12 +507,12 @@ public class RoutinesRepository : IRoutineRepository
                        "[Categories].[CategoryTitle], " +
                        "dbo.PersianDateTime([Categories].[LastUpdateDate]) AS [LastUpdate], " +
                        "[Categories].[IsDelete], " +
-                       "COUNT([Actions].[ActionId]) AS [ActionsCount] " +
+                       "(SELECT COUNT(*) " +
+                       "FROM [User].[Actions] " +
+                       "WHERE [CategoryId] = @CategoryId) AS [ActionsCount] " +
                        "FROM [User].[Categories] " +
                        "INNER JOIN [User].[Users] " +
                        "ON [User].[Categories].[UserId] = [User].[Users].[UserId] " +
-                       "INNER JOIN [User].[Actions] " +
-                       "ON [User].[Categories].[CategoryId] = [User].[Actions].[CategoryId] " +
                        "WHERE [User].[Categories].[CategoryId] = @CategoryId;";
 
 
