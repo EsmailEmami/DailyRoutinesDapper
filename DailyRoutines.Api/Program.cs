@@ -1,5 +1,8 @@
-using DailyRoutines.Application.Convertors;
+using DailyRoutines.Api.Hubs;
+using DailyRoutines.Application.Security;
 using DailyRoutines.Infrastructure;
+using Microsoft.AspNet.SignalR;
+using IUserIdProvider = Microsoft.AspNetCore.SignalR.IUserIdProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -31,5 +33,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>(nameof(ChatHub));
 
 app.Run();

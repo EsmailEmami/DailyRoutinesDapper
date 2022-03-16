@@ -1218,3 +1218,5 @@ C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Microsoft.Ope
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\System.Net.WebSockets.WebSocketProtocol.dll
+C:\Projects\DailyRoutinesDapper\DailyRoutines.Api\bin\Debug\net6.0\Microsoft.AspNet.SignalR.Core.dll

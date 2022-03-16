@@ -9,9 +9,16 @@ public static class IdentityUserExtension
     public static Guid GetUserId(this ClaimsPrincipal claimsPrincipal)
     {
         if (claimsPrincipal == null)
-            return default(Guid);
+            return default;
 
 
-        return claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)!.Value.ToGuid();
+        try
+        {
+            return claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)!.Value.ToGuid();
+        }
+        catch 
+        {
+            return default;
+        }
     }
 }

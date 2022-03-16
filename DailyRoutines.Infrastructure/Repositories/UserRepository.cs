@@ -142,7 +142,7 @@ public class UserRepository : IUserRepository
         string query = "SELECT (CASE WHEN EXISTS( " +
                        "SELECT NULL " +
                        "FROM [User].[Users] " +
-                       "WHERE [Email] = @Email " +
+                       "WHERE [Email] = @Email) " +
                        "THEN 1 ELSE 0 END) AS[Value]";
 
         return _db.QuerySingleOrDefault<bool>(query, new
