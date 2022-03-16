@@ -1,24 +1,37 @@
-﻿using DailyRoutines.Application.Security;
+﻿using DailyRoutines.Application.Extensions;
+using DailyRoutines.Application.Interfaces;
+using DailyRoutines.Domain.DTOs.Chat;
+using DailyRoutines.Domain.Entities.Chat;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 
 namespace DailyRoutines.Api.Hubs;
 
-[Access]
 public class ChatHub : Hub
 {
-    public override Task OnConnectedAsync()
-    {
-        //var userId = Context.User.GetUserId();
+    private readonly IChatRoomService _chatRoomService;
 
-        return base.OnConnectedAsync();
+    public ChatHub(IChatRoomService chatRoomService)
+    {
+        _chatRoomService = chatRoomService;
     }
 
-    public Task SendMessageToUser(Guid userId, string message)
+    public Task SendMessageToUser(AddMessageDTO message)
     {
-        Clients.Caller.SendAsync("ReceiveCallerMessage", message);
+        var newMessage = new ChatMessage()
+        {
+            FromUser = Context.User.GetUserId(),
+            ToUser = message.ToUser,
+            Message = message.Message
+        };
 
-        Clients.User(userId.ToString()).SendAsync("ReceiveUserMessage", message);
+        var messageResult = _chatRoomService.AddMessage(newMessage);
+
+        if (messageResult != null)
+        {
+            Clients.Caller.SendAsync("ReceiveCallerMessage", messageResult);
+
+            Clients.User(message.ToUser.ToString()).SendAsync("ReceiveUserMessage", messageResult);
+        }
 
         return Task.CompletedTask;
     }
