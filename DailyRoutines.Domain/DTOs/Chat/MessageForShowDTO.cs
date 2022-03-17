@@ -7,4 +7,5 @@ public class MessageForShowDTO
     public int MessageId { get; set; }
     public string Message { get; set; }
     public DateTime SendAt { get; set; }
+    public bool YouSent { get; set; }
 }

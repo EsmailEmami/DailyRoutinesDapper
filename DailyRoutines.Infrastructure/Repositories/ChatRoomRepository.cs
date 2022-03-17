@@ -1,5 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using DailyRoutines.Domain.DTOs.Chat;
 using DailyRoutines.Domain.Entities.Chat;
 using DailyRoutines.Domain.Interfaces;
@@ -28,5 +31,19 @@ public class ChatRoomRepository : IChatRoomRepository
             message.ToUser,
             message.Message
         });
+    }
+
+    public List<MessageForShowDTO> GetUserMessagesHistory(Guid fromUser, Guid toUser)
+    {
+        string query = "SELECT [MessageId],[Message],[SendAt],IIF([FromUser] = @FromUser, 1, 0)  AS [YouSent] " +
+                       "FROM [Chat].[Message] " +
+                       "WHERE ([FromUser] IN (@FromUser, @ToUser)) " +
+                       "AND ([ToUser] IN (@FromUser, @ToUser)) " +
+                       "ORDER BY [MessageId] ASC";
+        return _db.Query<MessageForShowDTO>(query, new
+        {
+            @FromUser = fromUser,
+            @ToUser = toUser
+        }).ToList();
     }
 }

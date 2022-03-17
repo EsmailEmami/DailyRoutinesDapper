@@ -15,7 +15,18 @@ public class ChatHub : Hub
         _chatRoomService = chatRoomService;
     }
 
-    public Task SendMessageToUser(AddMessageDTO message)
+    public async Task UserChatHistory(Guid userId)
+    {
+        var currentUserId = Context.User.GetUserId();
+        var history = _chatRoomService.GetUserMessagesHistory(currentUserId, userId);
+
+        if (history != null)
+        {
+            await Clients.Caller.SendAsync("ReceiveChatHistory", history);
+        }
+    }
+
+    public async Task SendMessageToUser(AddMessageDTO message)
     {
         var newMessage = new ChatMessage()
         {
@@ -28,11 +39,11 @@ public class ChatHub : Hub
 
         if (messageResult != null)
         {
-            Clients.Caller.SendAsync("ReceiveCallerMessage", messageResult);
+            await Clients.Caller.SendAsync("ReceiveUserMessage", messageResult);
 
-            Clients.User(message.ToUser.ToString()).SendAsync("ReceiveUserMessage", messageResult);
+            messageResult.YouSent = false;
+
+            await Clients.User(message.ToUser.ToString()).SendAsync("ReceiveUserMessage", messageResult);
         }
-
-        return Task.CompletedTask;
     }
 }
